@@ -305,7 +305,10 @@
     body.reading .scene > .eyebrow, body.reading .scene > h1, body.reading .scene > .intro, body.reading .scene > .circuit, body.reading .scene > .hint {opacity:0;visibility:hidden;pointer-events:none;position:absolute;transition:opacity .35s,visibility .35s}
     body.reading .gift.open {position:absolute;inset:0;width:100%;height:100svh;min-height:0;margin:0;display:grid;place-items:center}
     body.reading .book {width:min(calc(100vw - 110px),1500px);height:min(calc(100svh - 150px),900px);min-height:min(420px,calc(100svh - 150px));top:50%;transform:translate(-50%,-50%) scale(.9)}
-    @media(min-width:701px) { body.reading .gift.open .book {position:fixed;left:50vw;top:50svh;margin:0} }
+    @media(min-width:701px) and (orientation:landscape) {
+      body.reading .gift.open .book {position:fixed;left:50vw;top:50svh;margin:0}
+      body.reading .gift.book-open .book.book-open-state {transform:translate(-25%,-50%) scale(1)}
+    }
     body.reading .gift.open .book.front-facing, body.reading .gift.book-open .book.back-facing {width:min(88vw,670px,calc(74.4svh - 97px));height:auto;aspect-ratio:1082 / 1454;min-height:0}
     body.reading .gift.book-cover-visible .book {transform:translate(-50%,-50%) scale(1)}
     body.reading .gift.book-open .book {transform:translate(-50%,-50%) scale(1)}
