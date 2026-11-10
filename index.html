@@ -675,6 +675,7 @@
       hint.textContent = 'Places you’ve been — and a note just for you';
     });
     let turningSpread = false;
+    let turnGeneration = 0;
     function cleanPageClone(source) {
       const clone = source.cloneNode(true);
       clone.removeAttribute('id');
@@ -692,11 +693,24 @@
       surface.append(cleanPageClone(source));
       return surface;
     }
-    function makeTurnLeaf(front, back, direction, mobile) {
+    function makeTurnLeaf(front, back, mobile) {
       const leaf = document.createElement('div');
-      leaf.className = `turn-leaf ${direction}${mobile ? ' mobile' : ''}`;
+      leaf.className = `turn-leaf${mobile ? ' mobile' : ''}`;
       leaf.append(makeTurnFace(front, 'front'), makeTurnFace(back, 'back'));
       return leaf;
+    }
+    async function waitForImages(container) {
+      const images = [...container.querySelectorAll('img')];
+      await Promise.all(images.map(async image => {
+        image.loading = 'eager';
+        if (!image.complete) {
+          await new Promise(resolve => {
+            image.addEventListener('load', resolve, {once:true});
+            image.addEventListener('error', resolve, {once:true});
+          });
+        }
+        if (image.naturalWidth && image.decode) await image.decode().catch(() => {});
+      }));
     }
     function turnToSpread(targetSelector, message, direction) {
       if (turningSpread || closingBook) return;
@@ -705,14 +719,16 @@
       const destination = shell.querySelector(targetSelector);
       if (!current || !destination || current === destination) return;
       turningSpread = true;
+      const generation = ++turnGeneration;
       const mobile = window.matchMedia('(max-width: 700px) and (orientation: portrait)').matches;
       const stage = document.createElement('div');
       stage.className = `turn-stage${mobile ? ' mobile' : ''}`;
       stage.setAttribute('aria-hidden', 'true');
       stage.inert = true;
       const forward = direction === 'forward';
+      let leaf;
       const finishTurn = () => {
-        if (!turningSpread) return;
+        if (!turningSpread || generation !== turnGeneration) return;
         shell.querySelectorAll('.book-spread').forEach(spread => spread.classList.remove('active'));
         destination.classList.add('active');
         book.classList.toggle('back-facing', targetSelector === '.back-cover-spread');
@@ -735,13 +751,11 @@
         back.classList.remove('active');
         front.classList.add('turn-mobile-spread');
         back.classList.add('turn-mobile-spread');
-        const leaf = document.createElement('div');
-        leaf.className = `turn-leaf ${forward ? 'forward' : 'backward'} mobile`;
+        leaf = document.createElement('div');
+        leaf.className = 'turn-leaf mobile';
         leaf.append(makeTurnFace(front, 'front'), makeTurnFace(back, 'back'));
         stage.append(leaf);
-        current.classList.remove('active');
-        destination.classList.add('active');
-        leaf.addEventListener('animationend', () => finishTurn(), {once:true});
+        leaf.addEventListener('animationend', finishTurn, {once:true});
       } else {
         const underLeft = document.createElement('div');
         underLeft.className = 'turn-side';
@@ -752,16 +766,22 @@
         stage.append(underLeft, underRight);
         const frontSource = forward ? sideContent(current, 1) : sideContent(current, 0);
         const backSource = forward ? sideContent(destination, 0) : sideContent(destination, 1);
-        const leaf = makeTurnLeaf(frontSource, backSource, forward ? 'forward' : 'backward', false);
+        leaf = makeTurnLeaf(frontSource, backSource, false);
         stage.append(leaf);
+        leaf.addEventListener('animationend', finishTurn, {once:true});
+      }
+      hint.textContent = message;
+      waitForImages(stage).then(() => {
+        if (!turningSpread || generation !== turnGeneration || closingBook) return;
         shell.append(stage);
         current.classList.remove('active');
         destination.classList.add('active');
-        leaf.addEventListener('animationend', () => finishTurn(), {once:true});
-      }
-      if (mobile) shell.append(stage);
-      hint.textContent = message;
-      window.setTimeout(finishTurn, 1100);
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          if (!turningSpread || generation !== turnGeneration || closingBook) return;
+          leaf.classList.add(forward ? 'forward' : 'backward');
+          window.setTimeout(finishTurn, 1100);
+        }));
+      });
     }
     document.querySelectorAll('.next-spread').forEach(button => button.addEventListener('click', () => {
       if (button.closest('.places-spread')) turnToSpread('.people-spread', 'A little album of favorite people', 'forward');
@@ -780,6 +800,7 @@
     function returnToEnvelope() {
       if (!bookOpen || closingBook) return;
       closingBook = true;
+      turnGeneration++;
       book.querySelector('.turn-stage')?.remove();
       turningSpread = false;
       gift.classList.remove('book-open');
