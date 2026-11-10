@@ -256,7 +256,7 @@
     .people-note-ink {position:absolute;left:12%;bottom:4%;width:76%;height:17%;object-fit:contain;filter:drop-shadow(0 1px 0 #967a54aa) drop-shadow(0 -1px 0 #fff7);pointer-events:none}
     .back-cover-panel {position:relative;overflow:hidden;padding:0;background:#fff4d9;box-shadow:0 18px 42px #28162f55;border:0;background-image:none}
     .back-cover-panel > img {position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;object-position:center}
-    .back-party {position:absolute;z-index:20;inset:0;overflow:hidden;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .35s ease,visibility .35s ease}
+    .back-party {position:absolute;z-index:20;top:0;right:0;bottom:0;left:-5%;overflow:hidden;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .35s ease,visibility .35s ease}
     .book.back-facing .back-party {opacity:1;visibility:visible}
     .back-party .float-balloon {position:absolute;bottom:-20%;width:clamp(24px,3.2vw,48px);height:clamp(34px,4.5vw,62px);border-radius:52% 52% 48% 48%;opacity:0;box-shadow:inset -6px -7px 12px #2d174422,0 4px 12px #30213a22}
     .back-party .float-balloon::before {content:'';position:absolute;left:calc(50% - 4px);bottom:-5px;border-left:4px solid transparent;border-right:4px solid transparent;border-top:6px solid currentColor}
@@ -314,8 +314,8 @@
     .env-side { position:absolute; inset:0; overflow:hidden; border-radius:5px 5px 12px 12px; background:linear-gradient(25deg,#81283a,#ad3d48); clip-path:polygon(0 0,50% 57%,0 100%); }
     .env-side.right { background:linear-gradient(335deg,#81283a,#ad3d48); clip-path:polygon(100% 0,50% 57%,100% 100%) }
     .flap { position:absolute; z-index:2; top:0; left:0; width:100%; height:58%; background:linear-gradient(170deg,#d39b39,#bd7925); clip-path:polygon(0 0,100% 0,50% 100%); transform-origin:top; transition:transform .65s ease, z-index .01s .32s }
-    .seal { position:absolute; z-index:4; top:42%; left:50%; transform:translate(-50%,-50%); width:54px;height:54px;border:2px solid #8d174b;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#fff4bd,#d7a739);box-shadow:0 3px 9px #553b332e;transition:opacity .2s ease }
-    .seal-heart {display:inline-block;color:#e34234;font:700 1.8rem/1 'DM Sans',sans-serif;text-shadow:0 1px 0 #fff7;transform:scaleX(1.28)}
+    .seal { position:absolute; z-index:4; top:42%; left:50%; transform:translate(-50%,-50%); width:54px;height:54px;border:2px solid #8d174b;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#fff4bd,#d7a739);box-shadow:0 3px 9px #553b332e;transition:opacity .2s ease;cursor:pointer }
+    .seal-heart {display:inline-block;color:#e34234;font:700 1.8rem/1 'DM Sans',sans-serif;text-shadow:0 1px 0 #fff7;transform:scaleX(1.28);cursor:pointer}
     .hint { margin:22px 0 0; color:#887a70; font-size:.82rem; letter-spacing:.03em }
     .gift.open {width:min(100%,820px);height:530px;z-index:7}
     .gift.open .flap { transform:rotateX(180deg); z-index:0 }
@@ -530,7 +530,7 @@
         <div class="flap"></div><div class="env-side"></div><div class="env-side right"></div><div class="env-front"></div><div class="seal"><span class="seal-heart" aria-hidden="true">♥</span></div><figure class="krishna-art" aria-label="Embossed Krishna medallion"><img src="assets/krishna.png" alt=""></figure>
       </div>
     </div>
-    <p class="hint" id="hint">Tap the envelope to open your birthday card</p>
+    <p class="hint" id="hint"></p>
   </main>
   <script>
     const pageFlipScript = document.querySelector('#page-flip-library');
@@ -831,7 +831,6 @@
         bookOpen = false;
         closingBook = false;
         gift.setAttribute('aria-expanded', 'false');
-        hint.textContent = 'Tap the envelope to open your birthday card';
         pageFlipInstance?.update();
       }, 1050);
     }
