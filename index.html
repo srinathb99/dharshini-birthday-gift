@@ -130,8 +130,8 @@
     .room-content {position:relative;z-index:4;display:flex;flex-direction:column;align-items:center;width:min(100%,900px)}
     .room-kicker {margin:0 0 8px;color:#8d98aa;font-size:.68rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;transition:color .7s}
     .room-title {margin:0;color:#e8e6df;font:600 clamp(1.8rem,5vw,3rem)/1.12 'Playfair Display',serif;text-shadow:0 3px 20px #000;transition:color .7s,text-shadow .7s}
-    body.show-ups .room-title {animation:surprise-arrive .82s cubic-bezier(.2,.8,.25,1) both}
-    @keyframes surprise-arrive {0%{opacity:0;transform:translateY(13px) scale(.88);filter:blur(5px)}58%{opacity:1;transform:translateY(-2px) scale(1.06);filter:blur(0);text-shadow:0 0 24px #ffe58e88,0 3px 20px #000}78%{transform:translateY(1px) scale(.98)}100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+    body.show-ups .room-title {animation:surprise-arrive 1.15s cubic-bezier(.2,.8,.25,1) both}
+    @keyframes surprise-arrive {0%{opacity:0;transform:translateY(38px) scale(.24) rotate(-14deg);filter:blur(9px);letter-spacing:.16em;text-shadow:0 0 0 transparent}34%{opacity:1;transform:translateY(-5px) scale(1.58) rotate(5deg);filter:blur(0);letter-spacing:.06em;text-shadow:0 0 12px #fff,0 0 42px #ffe21a,0 0 86px #ff7a37,0 3px 20px #000}49%{transform:translateY(2px) scale(1.28) rotate(-4deg)}63%{transform:translateY(-2px) scale(1.48) rotate(2deg)}78%{transform:translateY(1px) scale(.94) rotate(0);text-shadow:0 0 24px #ffe58eaa,0 3px 20px #000}90%{transform:scale(1.08)}100%{opacity:1;transform:translateY(0) scale(1) rotate(0);filter:blur(0);letter-spacing:normal;text-shadow:0 3px 20px #000}}
     .room-copy {margin:10px 0 2px;color:#929bad;font-size:.88rem}
     .room-story-note {max-width:490px;margin:12px auto 8px;color:#b9c1ce;font:italic .96rem/1.55 'Playfair Display',serif}
     .ups-unit {position:relative;display:block;width:min(80vw,640px);height:min(57vh,470px);margin:4px auto 0;padding:0;border:0;background:transparent;cursor:pointer; -webkit-tap-highlight-color:transparent;animation:ups-idle 4s ease-in-out infinite}
