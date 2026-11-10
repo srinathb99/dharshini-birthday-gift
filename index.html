@@ -305,11 +305,7 @@
     body.reading .scene > .eyebrow, body.reading .scene > h1, body.reading .scene > .intro, body.reading .scene > .circuit, body.reading .scene > .hint {opacity:0;visibility:hidden;pointer-events:none;position:absolute;transition:opacity .35s,visibility .35s}
     body.reading .gift.open {position:absolute;inset:0;width:100%;height:100svh;min-height:0;margin:0;display:grid;place-items:center}
     body.reading .book {width:min(calc(100vw - 110px),1500px);height:min(calc(100svh - 150px),900px);min-height:min(420px,calc(100svh - 150px));top:50%;transform:translate(-50%,-50%) scale(.9)}
-    @media(min-width:701px) and (orientation:landscape) {
-      body.reading .gift.open .book {position:fixed;left:50vw;top:50svh;margin:0}
-      body.reading .gift.book-open .book.book-open-state {transform:translate(-25%,-50%) scale(1)}
-    }
-    body.reading .gift.open .book.front-facing, body.reading .gift.book-open .book.back-facing {width:min(88vw,670px,calc(74.4svh - 97px));height:auto;aspect-ratio:1082 / 1454;min-height:0}
+    @media(min-width:701px) and (orientation:landscape) { body.reading .gift.open .book {position:fixed;left:50vw;top:50svh;margin:0} }
     body.reading .gift.book-cover-visible .book {transform:translate(-50%,-50%) scale(1)}
     body.reading .gift.book-open .book {transform:translate(-50%,-50%) scale(1)}
     body.reading .page {padding:clamp(46px,6vw,94px);background-color:#fffaf0;background-image:linear-gradient(145deg,#fffefb 0%,#fffaf0 42%,#f7edda 100%),radial-gradient(#b28c4a12 .55px,transparent .75px);background-size:auto,7px 7px}
@@ -359,7 +355,7 @@
       body.reading .gift.open.book-open {position:absolute;inset:0;width:100%;height:100svh;min-height:0;margin:0;display:grid;place-items:center;padding:12px 0}
       body.reading .gift.book-open .book {position:relative;left:auto;top:auto;width:min(calc(100vw - 24px),560px,calc(73.4svh - 24px));height:auto;min-height:0;margin:0 auto;transform:none;perspective:none}
       body.reading .gift.book-open .book-shell {display:block;height:100%}
-      body.reading .gift.book-open .book.book-open-state {aspect-ratio:450 / 590}
+      body.reading .gift.book-open .book.book-open-state {aspect-ratio:1082 / 1454}
       body.reading .gift.book-open .book-spread.active:not(.back-cover-spread) {position:relative;inset:auto;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto;gap:14px;animation:none}
       body.reading .gift.book-open .back-cover-spread.active {position:relative;inset:auto;width:100%;height:auto;aspect-ratio:1075 / 1463}
       body.reading .gift.book-open .page {width:100%;height:min(calc(100vw - 24px),calc(50svh - 28px),390px);min-height:0;padding:30px 20px;border-radius:12px}
