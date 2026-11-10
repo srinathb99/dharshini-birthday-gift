@@ -148,8 +148,8 @@
     .room-stage.lit .room-kicker,.room-stage.lit .room-copy,.room-stage.lit .room-status,.room-stage.lit .room-story-note {color:#704f65}
     .room-stage.lit .ups-unit img {filter:brightness(1.1) saturate(1.05) drop-shadow(0 16px 45px #ffda67aa)}
     .light-flood {position:fixed;z-index:7;inset:0;pointer-events:none;background:#fff6cf;opacity:0}
-    body.lights-on .light-flood {animation:light-flood 1.5s ease-out forwards}
-    @keyframes light-flood {0%{opacity:0}25%{opacity:.95}100%{opacity:0}}
+    body.lights-on .light-flood {animation:light-flood 3s cubic-bezier(.22,.61,.36,1) forwards}
+    @keyframes light-flood {0%{opacity:0}12%{opacity:.95}58%{opacity:.88}82%{opacity:.48}100%{opacity:0}}
     .party-backdrop {position:fixed;inset:0;z-index:1;overflow:hidden;pointer-events:none;opacity:.24;transition:opacity 1.5s,filter 1.5s}
     body.lights-on .party-backdrop,body.unlocked .party-backdrop {opacity:.72;filter:saturate(1.2)}
     body.reading .party-backdrop {opacity:.46}
@@ -686,9 +686,9 @@
           roomStage.classList.add('fade');
           window.setTimeout(() => {
             document.body.classList.add('unlocked');
-            document.body.classList.remove('lights-on');
+            window.setTimeout(() => document.body.classList.remove('lights-on'), 800);
           }, 850);
-        }, 1050);
+        }, 1400);
       }
     });
 
@@ -824,9 +824,9 @@
       gift.classList.remove('book-open');
       book.classList.remove('book-open-state','back-facing');
       book.classList.add('front-facing');
-      hint.textContent = 'Returning to your birthday envelope';
       window.setTimeout(() => {
         gift.classList.remove('book-cover-visible','open');
+        hint.textContent = '';
         document.body.classList.remove('reading');
         bookOpen = false;
         closingBook = false;
