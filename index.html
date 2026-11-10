@@ -385,7 +385,7 @@
       body.reading .gift.book-open .book {position:relative;left:auto;top:auto;width:min(calc(100vw - 24px),560px,calc(73.4svh - 24px));height:auto;min-height:0;margin:0 auto;transform:none;perspective:none}
       body.reading .gift.book-open .book-shell {display:block;height:100%}
       body.reading .gift.book-open .book.book-open-state {aspect-ratio:1082 / 1454}
-      body.reading .gift.book-open .phone-book-nav {position:absolute;z-index:35;left:10px;right:10px;bottom:max(10px,env(safe-area-inset-bottom));display:flex;justify-content:space-between;align-items:center;pointer-events:none}
+      body.reading .gift.book-open .phone-book-nav {position:fixed;z-index:9999;left:50%;right:auto;bottom:max(14px,env(safe-area-inset-bottom));width:min(calc(100vw - 36px),340px);transform:translateX(-50%);display:flex;justify-content:space-between;align-items:center;pointer-events:none}
       body.reading .gift.book-open .phone-book-nav button {display:grid;place-items:center;width:42px;height:42px;padding:0;border:1px solid #b58b4d88;border-radius:50%;background:#fffaf0ed;color:#754d74;font:600 23px/1 'Playfair Display',serif;box-shadow:0 3px 12px #36251d26;pointer-events:auto;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
       body.reading .gift.book-open .phone-book-nav .phone-book-home {font-size:18px}
       body.reading .gift.book-open .book-spread.active:not(.back-cover-spread) {position:relative;inset:auto;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto;gap:14px;animation:none}
@@ -404,6 +404,18 @@
       .turn-stage.mobile .turn-mobile-spread .page {width:100%;height:auto!important;min-height:0}
     }
     @media(prefers-reduced-motion:reduce) { *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important} }
+    @media(max-width:900px) {
+      body.reading .gift.book-open .phone-book-nav {position:fixed;z-index:99999;left:50%;right:auto;bottom:max(14px,env(safe-area-inset-bottom));width:min(calc(100vw - 36px),340px);transform:translateX(-50%);display:flex;justify-content:space-between;align-items:center;pointer-events:none}
+      body.reading .gift.book-open .phone-book-nav button {pointer-events:auto}
+    }
+    @media(max-width:700px) {
+      body.reading .gift.book-open .book.mobile-book-mode .book-shell {position:absolute;inset:0;width:100%;height:100%;opacity:1;pointer-events:auto}
+      body.reading .gift.book-open .book.mobile-book-mode .book-spread {display:none!important;position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
+      body.reading .gift.book-open .book.mobile-book-mode .book-spread.active {display:block!important}
+      body.reading .gift.book-open .book.mobile-book-mode .book-spread .page {display:none!important}
+      body.reading .gift.book-open .book.mobile-book-mode .book-spread .page.mobile-page-current {position:absolute!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;min-height:0!important;padding:0!important;border-radius:12px!important;transform:none!important}
+      body.reading .gift.book-open .book.mobile-book-mode .book-spread .back-cover-panel.mobile-page-current {padding:0!important}
+    }
   </style>
 </head>
 <body>
@@ -729,6 +741,17 @@
     let closingBook = false;
     let pageFlipInstance = null;
     let pageFlipPromise = null;
+    const mobileBookMode = window.matchMedia('(max-width: 700px)').matches;
+    const mobileBookPages = [...book.querySelectorAll('.places-spread > .page, .people-spread > .page, .back-cover-panel')];
+    function showMobileBookPage(index) {
+      const pageIndex = Math.max(0, Math.min(index, mobileBookPages.length - 1));
+      mobileBookPages.forEach((page, i) => page.classList.toggle('mobile-page-current', i === pageIndex));
+      const spread = mobileBookPages[pageIndex].closest('.book-spread');
+      book.querySelectorAll('.book-spread').forEach(item => item.classList.toggle('active', item === spread));
+      book.classList.toggle('back-facing', pageIndex === mobileBookPages.length - 1);
+      book.dataset.mobilePage = String(pageIndex);
+      return pageIndex;
+    }
     async function waitForImages(container) {
       const images = [...container.querySelectorAll('img')];
       await Promise.all(images.map(async image => {
@@ -747,6 +770,11 @@
       if (pageFlipPromise) return pageFlipPromise;
       pageFlipPromise = (async () => {
         await waitForImages(book);
+        if (mobileBookMode) {
+          book.classList.add('mobile-book-mode');
+          showMobileBookPage(0);
+          return null;
+        }
         if (!window.St?.PageFlip && !pageFlipScript.dataset.loaded && !pageFlipScript.dataset.failed) {
           await new Promise(resolve => {
             pageFlipScript.addEventListener('load', resolve, {once:true});
@@ -812,6 +840,8 @@
           pageFlipInstance.update();
           requestAnimationFrame(() => pageFlipInstance?.flipNext('bottom'));
         }));
+      } else if (mobileBookMode) {
+        showMobileBookPage(0);
       } else {
         document.querySelector('.places-spread').classList.add('active');
       }
@@ -845,8 +875,19 @@
       event.preventDefault();
       event.stopPropagation();
       if (!bookOpen || closingBook) return;
+      if (mobileBookMode) {
+        const currentPage = Number(book.dataset.mobilePage || 0);
+        showMobileBookPage(currentPage + direction);
+        hint.textContent = Number(book.dataset.mobilePage) === mobileBookPages.length - 1 ? 'The back cover' : Number(book.dataset.mobilePage) >= 2 ? 'A little album of favorite people' : 'Places you’ve been — and a note just for you';
+        return;
+      }
       if (pageFlipInstance) {
-        direction > 0 ? pageFlipInstance.flipNext('bottom') : pageFlipInstance.flipPrev('bottom');
+        const currentPage = pageFlipInstance.getCurrentPageIndex();
+        const lastPage = pageFlipInstance.getPageCount() - 1;
+        const targetPage = currentPage + direction;
+        if (targetPage < 1 || targetPage > lastPage) return;
+        pageFlipInstance.turnToPage(targetPage);
+        window.setTimeout(() => book.classList.toggle('back-facing', targetPage === lastPage), 350);
         return;
       }
       const current = book.querySelector('.book-spread.active');
@@ -878,6 +919,7 @@
       if (pageFlipInstance) pageFlipInstance.turnToPage(0);
       gift.classList.remove('book-open');
       book.classList.remove('book-open-state','back-facing');
+      if (mobileBookMode) showMobileBookPage(0);
       book.classList.add('front-facing');
       window.setTimeout(() => {
         gift.classList.remove('book-cover-visible','open');
