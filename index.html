@@ -21,6 +21,7 @@
     .scene { display:none;width:min(100%, 1000px); padding:28px 20px; text-align:center; position:relative; z-index:1;transition:width .7s,padding .7s }
     body.unlocked {background:radial-gradient(ellipse at 50% 25%, #fffbe8 0, var(--paper) 60%, #f2cf83 100%)}
     body.lights-on {background:radial-gradient(ellipse at 50% 58%,#ffe58e 0,#fff2c7 28%,#171925 78%,#080a10 100%)}
+    body.unlocked.lights-on {background:radial-gradient(ellipse at 50% 25%, #fffbe8 0, var(--paper) 60%, #f2cf83 100%)}
     body.lights-on .ups-board {border-color:#f8da72;box-shadow:0 0 90px #ffd34c55,0 0 200px #ffc33c22,inset 0 0 50px #ffe98712}
     body.unlocked::after {opacity:1}
     body.unlocked .scene {display:block;z-index:2}
@@ -148,8 +149,8 @@
     .room-stage.lit .room-kicker,.room-stage.lit .room-copy,.room-stage.lit .room-status,.room-stage.lit .room-story-note {color:#704f65}
     .room-stage.lit .ups-unit img {filter:brightness(1.1) saturate(1.05) drop-shadow(0 16px 45px #ffda67aa)}
     .light-flood {position:fixed;z-index:7;inset:0;pointer-events:none;background:#fff6cf;opacity:0}
-    body.lights-on .light-flood {animation:light-flood 3s cubic-bezier(.22,.61,.36,1) forwards}
-    @keyframes light-flood {0%{opacity:0}12%{opacity:.95}58%{opacity:.88}82%{opacity:.48}100%{opacity:0}}
+    body.lights-on .light-flood {animation:light-flood 2.1s ease-out forwards}
+    @keyframes light-flood {0%{opacity:0}18%{opacity:.95}40%{opacity:.2}70%{opacity:.06}100%{opacity:0}}
     .party-backdrop {position:fixed;inset:0;z-index:1;overflow:hidden;pointer-events:none;opacity:.24;transition:opacity 1.5s,filter 1.5s}
     body.lights-on .party-backdrop,body.unlocked .party-backdrop {opacity:.72;filter:saturate(1.2)}
     body.reading .party-backdrop {opacity:.46}
@@ -554,6 +555,7 @@
     ];
     let visibleStateOptions = [];
     let activeStateOption = -1;
+    let stateOptionPointerStart = null;
     function closeStateOptions() {
       recipientState.setAttribute('aria-expanded', 'false');
       statePicker.setAttribute('aria-expanded', 'false');
@@ -585,7 +587,20 @@
         option.setAttribute('role', 'option');
         option.setAttribute('aria-selected', 'false');
         option.textContent = state;
-        option.addEventListener('pointerdown', event => event.preventDefault());
+        option.addEventListener('pointerdown', event => {
+          if (event.pointerType === 'mouse') event.preventDefault();
+          else stateOptionPointerStart = {state, x:event.clientX, y:event.clientY};
+        });
+        option.addEventListener('pointerup', event => {
+          const start = stateOptionPointerStart;
+          stateOptionPointerStart = null;
+          if (!start || start.state !== state) return;
+          if (Math.hypot(event.clientX - start.x, event.clientY - start.y) < 14) {
+            event.preventDefault();
+            selectRecipientState(state);
+          }
+        });
+        option.addEventListener('pointercancel', () => { stateOptionPointerStart = null; });
         option.addEventListener('click', () => selectRecipientState(state));
         stateOptionsList.append(option);
       });
@@ -624,7 +639,11 @@
         closeStateOptions();
       }
     });
-    recipientState.addEventListener('blur', closeStateOptions);
+    recipientState.addEventListener('blur', () => {
+      window.setTimeout(() => {
+        if (recipientState.getAttribute('aria-expanded') === 'true' && !statePicker.matches(':focus-within')) closeStateOptions();
+      }, 700);
+    });
     recipientState.addEventListener('invalid', renderStateOptions);
     document.addEventListener('pointerdown', event => {
       if (!statePicker.contains(event.target)) closeStateOptions();
@@ -686,9 +705,9 @@
           roomStage.classList.add('fade');
           window.setTimeout(() => {
             document.body.classList.add('unlocked');
-            window.setTimeout(() => document.body.classList.remove('lights-on'), 800);
+            window.setTimeout(() => document.body.classList.remove('lights-on'), 200);
           }, 850);
-        }, 1400);
+        }, 1050);
       }
     });
 
