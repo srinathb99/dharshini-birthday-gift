@@ -7,7 +7,7 @@
   <title>A little Diwali thank-you · ITSM Leadership</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     :root { --paper:#fff0c2; --ink:#321b3b; --rose:#e34234; --rose-dark:#8d174b; --gold:#ffe21a; --cream:#fffbe8; --green:#57227a; --blue:#4420a0; --purple:#61278c; --tomato:#e34234; --electric:#ffe21a; }
     * { box-sizing:border-box }
@@ -193,7 +193,7 @@
     .places-page {display:block;padding:0}
     .places-grid {position:absolute;inset:4% 4.5% 5%;}
     .places-left .places-grid {inset:14% 4.5% 5%}
-    .places-page p.places-heading {position:absolute;z-index:2;top:3%;left:4%;right:4%;max-width:none;margin:0;text-align:center;color:var(--rose-dark);font-family:'Playfair Display',Georgia,serif!important;font-size:clamp(.9rem,1.35vw,1.2rem);font-weight:600;line-height:1.2;letter-spacing:.025em}
+    .places-page p.places-heading {position:absolute;z-index:2;top:3%;left:4%;right:4%;max-width:none;margin:0;text-align:center;color:var(--rose-dark);font-family:'Cormorant Garamond',Georgia,serif!important;font-size:clamp(1.15rem,2vw,1.75rem);font-weight:700;line-height:1.05;letter-spacing:.015em}
     .place-card {position:absolute;min-width:0;min-height:0;margin:0;padding:7px;overflow:hidden;border:0;border-radius:2px;background:#fffdf5;box-shadow:0 7px 17px #321b3b36,0 1px 3px #321b3b25}
     .place-card img {display:block;width:100%;height:100%;object-fit:contain;background:#f0e8d8}
     .places-left .kalpakkam {left:0;top:4%;width:58%;height:35%;transform:rotate(-3.5deg);z-index:1}
@@ -229,11 +229,11 @@
     .page h2 { position:relative;z-index:1;margin:28px 0 12px;color:var(--rose-dark);font:600 clamp(1.7rem,4vw,2.35rem)/1.08 'Playfair Display',serif }
     .page p { position:relative;z-index:1;max-width:290px;margin:0;color:#71645c;font-size:.88rem;line-height:1.65 }
     .book-signature {position:relative;z-index:1;margin-top:22px;color:#8b6b50;font:italic 1.04rem 'Playfair Display',serif}
-    .page-corner {position:absolute;z-index:14;right:0;bottom:0;width:54px;height:54px;display:grid;place-items:end;padding:0 7px 5px;border:0;background:linear-gradient(135deg,transparent 48%,#c28b2d 49%,#ffe21a 100%);clip-path:polygon(0 100%,100% 0,100% 100%);color:#61278c;font:700 18px 'DM Sans',sans-serif;cursor:pointer;transition:filter .2s,transform .2s}
-    .page-corner.home-corner {top:0;left:0;right:auto;bottom:auto;clip-path:polygon(0 0,100% 0,0 100%);place-items:start;padding:7px 0 0 7px;background:linear-gradient(135deg,#ffe21a,#c28b2d 51%,transparent 52%)}
-    .page.left .page-corner {right:auto;left:0;clip-path:polygon(0 0,100% 100%,0 100%);place-items:end start;padding:0 0 5px 7px;background:linear-gradient(45deg,#ffe21a,#c28b2d 51%,transparent 52%)}
-    .page.left .page-corner.home-corner {top:0;bottom:auto;clip-path:polygon(0 0,100% 0,0 100%);place-items:start;padding:7px 0 0 7px;background:linear-gradient(135deg,#ffe21a,#c28b2d 51%,transparent 52%)}
-    .page-corner:hover {filter:brightness(1.1);transform:scale(1.08);transform-origin:bottom right}
+    .page-corner {position:absolute;z-index:14;right:0;bottom:0;width:38px;height:38px;display:grid;place-items:end;padding:0 5px 4px;border:0;background:linear-gradient(135deg,transparent 48%,#b68a4b55 49%,#dec68e88 100%);clip-path:polygon(0 100%,100% 0,100% 100%);color:#7d5367aa;font:600 14px 'DM Sans',sans-serif;cursor:pointer;transition:filter .2s,transform .2s,background .2s,color .2s}
+    .page-corner.home-corner {top:0;left:0;right:auto;bottom:auto;clip-path:polygon(0 0,100% 0,0 100%);place-items:start;padding:5px 0 0 5px;background:linear-gradient(135deg,#dec68e88,#b68a4b55 51%,transparent 52%)}
+    .page.left .page-corner {right:auto;left:0;clip-path:polygon(0 0,100% 100%,0 100%);place-items:end start;padding:0 0 4px 5px;background:linear-gradient(45deg,#b68a4b55,#dec68e88 51%,transparent 52%)}
+    .page.left .page-corner.home-corner {top:0;bottom:auto;clip-path:polygon(0 0,100% 0,0 100%);place-items:start;padding:5px 0 0 5px;background:linear-gradient(135deg,#dec68e88,#b68a4b55 51%,transparent 52%)}
+    .page-corner:hover {filter:brightness(1.1);transform:scale(1.06);color:#61278c;transform-origin:bottom right}
     .page-corner.home-corner:hover {transform-origin:top left}
     .page-corner:focus-visible {outline:3px solid #c28b2d;outline-offset:3px}
     @keyframes beacon {0%,100%{box-shadow:0 2px 8px #38231f55,0 0 0 0 #c28b2d77}50%{box-shadow:0 2px 8px #38231f55,0 0 0 7px #c28b2d00}}
@@ -278,7 +278,7 @@
     body.reading .page-kicker {font-size:clamp(.68rem,1vw,.9rem);color:var(--purple)}
     body.reading .book-signature {font-size:clamp(1rem,1.8vw,1.45rem);color:var(--purple)}
     body.reading .places-page {padding:0}
-    body.reading .places-page p.places-heading {max-width:none;font-family:'Playfair Display',Georgia,serif!important;font-size:clamp(.7rem,1.35vw,1.15rem);font-weight:600;line-height:1.2}
+    body.reading .places-page p.places-heading {max-width:none;font-family:'Cormorant Garamond',Georgia,serif!important;font-size:clamp(1.05rem,2vw,1.65rem);font-weight:700;line-height:1.05}
     body.reading .book::before {width:19px;background:linear-gradient(90deg,#8d174b,#ffe21a 42%,#e34234 58%,#61278c)}
     body.reading .note {opacity:0;transition:opacity .25s}
     body.reading .motif {width:56px;height:56px;background:#fffbe8e8;border-color:#e34234}
@@ -366,7 +366,7 @@
   <div class="light-flood" aria-hidden="true"></div>
   <span class="sparkle s1" aria-hidden="true">✦</span><span class="sparkle s2" aria-hidden="true">✧</span><span class="sparkle s3" aria-hidden="true">✧</span><span class="sparkle s4" aria-hidden="true">✦</span>
   <main class="scene">
-    <p class="eyebrow">A little shubha surprise</p>
+    <p class="eyebrow">A little surprise</p>
     <h1>A brighter year<br>is powering up…</h1>
     <p class="intro">For the engineer who keeps every light on.</p>
     <div class="circuit" aria-hidden="true">⚡ Dharshini N Chari, B.Tech, M.Tech (soon!) ⚡</div>
