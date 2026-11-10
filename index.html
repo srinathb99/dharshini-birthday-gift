@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#10141d" />
+  <title>A little Diwali thank-you · ITSM Leadership</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --paper:#fff0c2; --ink:#321b3b; --rose:#e34234; --rose-dark:#8d174b; --gold:#ffe21a; --cream:#fffbe8; --green:#57227a; --blue:#4420a0; --purple:#61278c; --tomato:#e34234; --electric:#ffe21a; }
+    * { box-sizing:border-box }
+    body { margin:0; min-height:100vh; display:grid; place-items:center; overflow:hidden; color:var(--ink); background:radial-gradient(ellipse at 50% 25%, #131b2a 0, #0b0e16 65%, #06070b 100%); font-family:'DM Sans',sans-serif;transition:background .7s }
+    body::before { content:none; }
+    body::after { content:''; position:fixed; inset:18px; border:1px solid #61278c66; border-radius:10px; pointer-events:none; z-index:9;opacity:0 }
+    body.reading {background:radial-gradient(ellipse at 50% 25%,#fffbe8 0,#f5e9ff 70%,#d9c0ef 100%)}
+    body.reading::before {content:none} body.reading::after {border-color:#e3423488;inset:12px}
+    .scene { display:none;width:min(100%, 1000px); padding:28px 20px; text-align:center; position:relative; z-index:1;transition:width .7s,padding .7s }
+    body.unlocked {background:radial-gradient(ellipse at 50% 25%, #fffbe8 0, var(--paper) 60%, #f2cf83 100%)}
+    body.lights-on {background:radial-gradient(ellipse at 50% 58%,#ffe58e 0,#fff2c7 28%,#171925 78%,#080a10 100%)}
+    body.lights-on .ups-board {border-color:#f8da72;box-shadow:0 0 90px #ffd34c55,0 0 200px #ffc33c22,inset 0 0 50px #ffe98712}
+    body.unlocked::after {opacity:1}
+    body.unlocked .scene {display:block;z-index:2}
+    body.unlocked .puzzle-screen {display:none}
+    body.unlocked .room-stage {display:none}
+    body.unlocked .sparkle {display:block}
+    body.unlocked .ambient-krishna {opacity:.13}
+    .puzzle-screen {position:relative;z-index:2;width:min(1120px,calc(100vw - 36px));padding:28px 20px;color:#eef2f7;text-align:center;transition:opacity .8s,transform .8s}
+    .puzzle-screen.fade-out {opacity:0;transform:scale(1.035);pointer-events:none}
+    .puzzle-kicker {margin:0 0 10px;color:#f7cf57;font-size:.72rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase}
+    .puzzle-screen h1 {margin:0;font:600 clamp(2rem,5vw,3.5rem)/1.08 'Playfair Display',serif;color:#fff8e8}
+    .puzzle-copy {margin:12px auto 24px;color:#aeb8c8;font-size:.94rem}
+    .puzzle-progress {color:#f7cf57;font-size:.76rem;letter-spacing:.12em;text-transform:uppercase}
+    .ups-board {position:relative;width:min(100%,920px);height:min(52vh,470px);min-height:350px;margin:18px auto 12px;border:1px solid #536176;border-radius:18px;background:linear-gradient(145deg,#182131,#101722 70%);box-shadow:0 24px 70px #0008,inset 0 1px #ffffff12;overflow:hidden;transition:background 1.2s,box-shadow 1.2s,border-color 1.2s}
+    .ups-board.powering {background:linear-gradient(145deg,#28334a,#20253a 70%);box-shadow:0 0 50px #f5ce5b22,inset 0 1px #ffffff24;border-color:#a9955a}
+    .puzzle-screen.powered {background:radial-gradient(ellipse at 50% 58%,#ffe7a766 0,transparent 65%)}
+    .ups-board::before {content:'';position:absolute;inset:0;background-image:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px);background-size:32px 32px;mask-image:linear-gradient(90deg,#000,transparent 80%);pointer-events:none}
+    .wire-layer {position:absolute;inset:0;width:100%;height:100%;z-index:1;overflow:visible;pointer-events:none}
+    .wire {fill:none;stroke:#344052;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;transition:stroke .35s,filter .35s}
+    .wire.live {stroke:#ffdc55;filter:drop-shadow(0 0 7px #ffcc44);stroke-dasharray:12 7;animation:wire-flow 1.1s linear infinite}
+    @keyframes wire-flow {to{stroke-dashoffset:-38}}
+    .node {position:absolute;z-index:2;width:clamp(112px,14vw,150px);min-height:66px;padding:12px 9px;border:1px solid #59677b;border-radius:12px;background:linear-gradient(145deg,#253145,#1b2432);color:#e8edf4;font:600 .77rem/1.25 'DM Sans',sans-serif;box-shadow:0 8px 20px #0004;cursor:pointer;transition:border .2s,background .25s,transform .2s,box-shadow .25s}
+    .node::before {content:'';display:block;width:8px;height:8px;margin:0 auto 8px;border-radius:50%;background:#718097;box-shadow:0 0 0 4px #71809722}
+    .node:hover {transform:translateY(-2px);border-color:#d9c16f}
+    .node.selected {border-color:#ffe36b;background:linear-gradient(145deg,#3c3a2b,#252b32);box-shadow:0 0 0 2px #ffe36b55,0 0 24px #ffe36b22}
+    .node.selected::before,.node.connected::before {background:#ffdf56;box-shadow:0 0 12px #ffdf56}
+    .node.connected {border-color:#c9ad4b}
+    .node.connected:not(.load) {background:linear-gradient(145deg,#343d42,#202a30)}
+    .node.load {color:#bac3cf}
+    .node.load.lit {color:#fff8d4;border-color:#ffe36b;background:linear-gradient(145deg,#554b28,#292d2a);box-shadow:0 0 34px #ffdb4c55}
+    .node.load.lit::before {background:#fff38b;box-shadow:0 0 18px 5px #ffdd4d}
+    .puzzle-status {min-height:24px;margin:8px auto 0;color:#aeb8c8;font-size:.82rem}
+    .puzzle-status.success {color:#ffe36b}
+    .puzzle-instruction {margin:12px auto 0;color:#758196;font-size:.7rem;letter-spacing:.05em}
+    .puzzle-screen button:focus-visible {outline:2px solid #ffe36b;outline-offset:3px}
+    .room-stage {position:fixed;inset:0;z-index:2;display:none;place-items:center;overflow:hidden;padding:26px 18px;color:#fff8e8;text-align:center;background:radial-gradient(ellipse at 50% 74%,#18202cee 0,#0c111ae6 44%,#07090eee 78%);opacity:0;transform:scale(1.025);transition:opacity .8s ease,transform .9s ease,filter 1s}
+    body.show-ups .room-stage {opacity:1;transform:scale(1)}
+
+    .diwali-intake {position:fixed;inset:0;z-index:5;display:grid;place-items:center;overflow:auto;padding:22px;background:radial-gradient(ellipse at 50% 0%,#283143 0,#111722 48%,#090c12 100%);color:#321b3b}
+    .diwali-intake {transition:opacity .45s ease,filter .45s ease}
+    body.transitioning .diwali-intake {opacity:0;filter:brightness(1.35);pointer-events:none}
+    .gift-transition {position:fixed;inset:0;z-index:12;display:grid;place-items:center;overflow:hidden;background:radial-gradient(circle at 50% 52%,#ffe78c 0,#f0a83c 18%,#7d3f4a 48%,#121522 82%);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .65s ease,visibility .65s}
+    .gift-transition::before,.gift-transition::after {content:"";position:absolute;left:50%;top:50%;width:min(34vw,34vh);aspect-ratio:1;border:1px solid #fff0b877;border-radius:50%;transform:translate(-50%,-50%) scale(.2);opacity:0}
+    .gift-transition::after {width:min(55vw,55vh);border-color:#fff8d566}
+    body.transitioning .gift-transition {opacity:1;visibility:visible}
+    body.transitioning .gift-transition::before {animation:diwali-ring 1.8s ease-out both}
+    body.transitioning .gift-transition::after {animation:diwali-ring 1.8s .12s ease-out both}
+    .gift-transition.exit {opacity:0}
+    .transition-message {position:relative;z-index:2;display:grid;justify-items:center;gap:12px;color:#fff8df;text-align:center;text-shadow:0 2px 18px #54264788;animation:transition-rise .7s .12s both}
+    .transition-diya {font-size:clamp(3.5rem,10vw,6rem);line-height:1;filter:drop-shadow(0 0 22px #ffe89b);animation:diya-glow .9s ease-in-out infinite alternate}
+    .transition-message p {margin:0;font:600 clamp(1.35rem,4vw,2.25rem)/1.2 'Playfair Display',serif}
+    .transition-spark {position:absolute;color:#fff0a4;font-size:1.2rem;animation:spark-rise 1.5s ease-out both}
+    .spark-a {left:25%;top:64%}.spark-b {left:69%;top:61%;animation-delay:.18s}.spark-c {left:39%;top:29%;animation-delay:.32s}.spark-d {left:61%;top:36%;animation-delay:.1s}
+    @keyframes diwali-ring {0%{transform:translate(-50%,-50%) scale(.2);opacity:.8}100%{transform:translate(-50%,-50%) scale(4.5);opacity:0}}
+    @keyframes diya-glow {from{transform:scale(.94);filter:drop-shadow(0 0 12px #ffe89b)}to{transform:scale(1.06);filter:drop-shadow(0 0 34px #fff3ba)}}
+    @keyframes transition-rise {from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+    @keyframes spark-rise {0%{opacity:0;transform:translateY(26px) scale(.5)}35%{opacity:1}100%{opacity:0;transform:translateY(-70px) scale(1.25)}}
+    .diwali-form-card {width:min(100%,690px);max-height:calc(100svh - 44px);overflow:auto;padding:clamp(24px,5vw,48px);border:1px solid #d5aa49;border-radius:22px;background:linear-gradient(145deg,#fffdf3,#fff1c9);box-shadow:0 28px 90px #0008,inset 0 0 0 6px #ffe9a155;text-align:left}
+    .diwali-form-kicker {margin:0 0 12px;color:#8d174b;font-size:.68rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase}
+    .diwali-form-card h1 {margin:0;color:#321b3b;font:600 clamp(2rem,5vw,3.2rem)/1.08 'Playfair Display',serif;letter-spacing:-.025em}
+    .diwali-form-intro {max-width:560px;margin:16px 0 26px;color:#695b63;font-size:.96rem;line-height:1.65}
+    .diwali-fields {display:grid;grid-template-columns:1fr 1fr;gap:14px 16px}
+    .diwali-field {display:flex;flex-direction:column;gap:7px;min-width:0}
+    .diwali-field.full {grid-column:1/-1}
+    .diwali-field label,.gift-choice legend {color:#462b43;font-size:.76rem;font-weight:700;letter-spacing:.04em}
+    .diwali-field input,.diwali-field textarea {width:100%;padding:12px 13px;border:1px solid #d8c69e;border-radius:10px;background:#fffef9;color:#321b3b;font:500 .9rem 'DM Sans',sans-serif;outline:none;transition:border-color .2s,box-shadow .2s}
+    .diwali-field input:focus,.diwali-field textarea:focus {border-color:#8d174b;box-shadow:0 0 0 3px #8d174b18}
+    .diwali-field textarea {min-height:84px;resize:vertical}
+    .gift-choice {grid-column:1/-1;margin:2px 0 0;padding:0;border:0}
+    .gift-choice legend {margin-bottom:9px}
+    .gift-options {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+    .gift-option {position:relative}
+    .gift-option input {position:absolute;opacity:0;inset:0;pointer-events:none}
+    .gift-option label {display:flex;min-height:52px;align-items:center;justify-content:center;padding:10px;border:1px solid #d8c69e;border-radius:10px;background:#fffef9;color:#5b4753;font-size:.8rem;font-weight:600;text-align:center;cursor:pointer;transition:border-color .2s,background .2s,box-shadow .2s}
+    .gift-option input:checked+label {border-color:#8d174b;background:#fff0d3;box-shadow:inset 0 0 0 1px #8d174b;color:#8d174b}
+    .gift-option input:focus-visible+label {outline:3px solid #8d174b55;outline-offset:2px}
+    .hoodie-size-panel,.gift-card-details {grid-column:1/-1;margin:0;padding:12px 14px;border:1px solid #d8c69e;border-radius:12px;background:#fff9e8}
+    .hoodie-size-panel legend {padding:0 5px;color:#462b43;font-size:.74rem;font-weight:700}
+    .hoodie-size-options {display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+    .hoodie-size-option {position:relative}
+    .hoodie-size-option input {position:absolute;opacity:0;inset:0;pointer-events:none}
+    .hoodie-size-option label {display:grid;min-height:42px;place-items:center;border:1px solid #d8c69e;border-radius:9px;background:#fffef9;color:#5b4753;font-size:.78rem;font-weight:700;cursor:pointer}
+    .hoodie-size-option input:checked+label {border-color:#8d174b;background:#fff0d3;color:#8d174b;box-shadow:inset 0 0 0 1px #8d174b}
+    .hoodie-size-option input:focus-visible+label {outline:3px solid #8d174b55;outline-offset:2px}
+    .gift-card-details {color:#695b63;font-size:.82rem;line-height:1.55}
+    .gift-card-details strong {color:#8d174b}
+    .hoodie-size-panel[hidden],.gift-card-details[hidden] {display:none}
+    .diwali-submit {grid-column:1/-1;display:flex;justify-content:center;width:100%;margin-top:4px;padding:14px 20px;border:0;border-radius:999px;background:linear-gradient(100deg,#8d174b,#61278c);color:#fff8e8;font:700 .86rem 'DM Sans',sans-serif;letter-spacing:.07em;cursor:pointer;box-shadow:0 8px 18px #61278c35;transition:transform .2s,box-shadow .2s}
+    .diwali-submit:hover {transform:translateY(-2px);box-shadow:0 12px 24px #61278c45}
+    .diwali-submit:focus-visible {outline:3px solid #e7b84e;outline-offset:3px}
+    body.show-ups .diwali-intake {display:none}
+    body.show-ups .room-stage {display:grid}
+    body.unlocked.show-ups .room-stage {display:none}
+    @media(max-width:600px) { .diwali-intake{padding:12px}.diwali-form-card{max-height:calc(100svh - 24px);padding:24px 18px;border-radius:17px}.diwali-form-intro{font-size:.87rem;margin:12px 0 20px}.diwali-fields{grid-template-columns:1fr;gap:12px}.diwali-field.full,.gift-choice,.hoodie-size-panel,.gift-card-details,.diwali-submit{grid-column:1}.gift-options{grid-template-columns:1fr} }
+    .room-stage::before {content:'';position:absolute;left:-10%;right:-10%;bottom:-25%;height:48%;border-radius:50%;background:radial-gradient(ellipse,#273142 0,#151c28 45%,transparent 72%);opacity:.65}
+    .room-stage.fade {opacity:0;filter:brightness(2.6);pointer-events:none}
+    .room-content {position:relative;z-index:4;display:flex;flex-direction:column;align-items:center;width:min(100%,900px)}
+    .room-kicker {margin:0 0 8px;color:#8d98aa;font-size:.68rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;transition:color .7s}
+    .room-title {margin:0;color:#e8e6df;font:600 clamp(1.8rem,5vw,3rem)/1.12 'Playfair Display',serif;text-shadow:0 3px 20px #000;transition:color .7s,text-shadow .7s}
+    .room-copy {margin:10px 0 2px;color:#929bad;font-size:.88rem}
+    .ups-unit {position:relative;display:block;width:min(80vw,640px);height:min(57vh,470px);margin:4px auto 0;padding:0;border:0;background:transparent;cursor:pointer; -webkit-tap-highlight-color:transparent;animation:ups-idle 4s ease-in-out infinite}
+    .ups-unit img {width:100%;height:100%;object-fit:contain;filter:brightness(.42) saturate(.78) contrast(1.08);transition:filter 1.2s,transform .18s;user-select:none;-webkit-user-drag:none}
+    .ups-unit:hover img {filter:brightness(.55) saturate(.85) contrast(1.08)}
+    .ups-unit:active img {transform:scale(.985)}
+    .ups-unit.bump {animation:ups-bump .28s ease}
+    @keyframes ups-idle {50%{transform:translateY(4px)}}
+    @keyframes ups-bump {25%{transform:translateX(-7px) rotate(-.8deg)}55%{transform:translateX(5px) rotate(.5deg)}100%{transform:translateX(0) rotate(0)}}
+    .power-dots {display:flex;gap:10px;margin:0 auto 12px}
+    .power-dots i {width:8px;height:8px;border:1px solid #525d70;border-radius:50%;background:#161d28;transition:background .35s,box-shadow .35s,border-color .35s}
+    .power-dots i.on {background:#f3cf5b;border-color:#fff1a0;box-shadow:0 0 12px #ffdf73}
+    .room-status {min-height:25px;margin:0;color:#929bad;font-size:.8rem;letter-spacing:.04em;transition:color .5s}
+    .room-stage.lit {background:radial-gradient(ellipse at 50% 50%,#fff5d6 0,#ffe59b 22%,#725b6b 58%,#171724 100%)}
+    .room-stage.lit::before {opacity:0}
+    .room-stage.lit .room-title {color:#55295f;text-shadow:0 2px 12px #fff9}
+    .room-stage.lit .room-kicker,.room-stage.lit .room-copy,.room-stage.lit .room-status {color:#704f65}
+    .room-stage.lit .ups-unit img {filter:brightness(1.1) saturate(1.05) drop-shadow(0 16px 45px #ffda67aa)}
+    .light-flood {position:fixed;z-index:7;inset:0;pointer-events:none;background:#fff6cf;opacity:0}
+    body.lights-on .light-flood {animation:light-flood 1.5s ease-out forwards}
+    @keyframes light-flood {0%{opacity:0}25%{opacity:.95}100%{opacity:0}}
+    .party-backdrop {position:fixed;inset:0;z-index:1;overflow:hidden;pointer-events:none;opacity:.24;transition:opacity 1.5s,filter 1.5s}
+    body.lights-on .party-backdrop,body.unlocked .party-backdrop {opacity:.72;filter:saturate(1.2)}
+    body.reading .party-backdrop {opacity:.46}
+    .party-star,.party-confetti,.party-balloon {position:absolute;display:block}
+    .party-star {color:#ffe38a;font-size:clamp(10px,1.5vw,20px);animation:party-drift 10s ease-in-out infinite,party-twinkle 3s ease-in-out infinite alternate}
+    .party-confetti {width:5px;height:10px;border-radius:2px;background:#e34234;opacity:.68;transform:rotate(24deg);animation:party-drift 13s ease-in-out infinite}
+    .party-confetti:nth-of-type(3n) {background:#ffe21a}
+    .party-confetti:nth-of-type(4n) {background:#8d48a7}
+    .party-confetti:nth-of-type(5n) {width:4px;height:4px;border-radius:50%;background:#4c9467}
+    .party-balloon {width:15px;height:19px;border-radius:55% 55% 48% 48%;background:radial-gradient(ellipse at 30% 25%,#ffffffaa,#e34234 40%,#a72346);opacity:.58;animation:balloon-float 12s ease-in-out infinite}
+    .party-balloon::before {content:'';position:absolute;left:6px;bottom:-4px;border-left:2px solid #e3423499;border-bottom:2px solid transparent}
+    .party-balloon::after {content:'';position:absolute;left:7px;top:18px;height:20px;border-left:1px solid #8c6b78aa;transform:rotate(5deg);transform-origin:top}
+    .party-star:nth-of-type(3n) {animation-delay:-4s,-1s}
+    .party-confetti:nth-of-type(2n) {animation-delay:-7s}
+    .party-balloon:nth-of-type(3n) {animation-delay:-6s}
+    @keyframes party-drift {0%,100%{transform:translate3d(0,0,0) rotate(0)}50%{transform:translate3d(8px,-16px,0) rotate(14deg)}}
+    @keyframes balloon-float {0%,100%{transform:translateY(8px) rotate(-5deg)}50%{transform:translateY(-14px) rotate(5deg)}}
+    @keyframes party-twinkle {from{opacity:.35}to{opacity:.95}}
+    @media(max-width:600px) {
+      body{overflow-x:hidden;overflow-y:auto;align-items:start}.puzzle-screen{width:100%;min-height:100svh;padding:24px 12px}.puzzle-copy{font-size:.82rem;margin:10px auto 18px}
+      .ups-board{width:100%;height:540px;min-height:0;margin:14px auto 8px}
+      .node{width:31%;min-height:64px;padding:9px 4px;font-size:.63rem;border-radius:10px}
+      .node.mains{left:1%!important;top:42%!important}.node.rectifier{left:34%!important;top:42%!important}.node.battery{left:1%!important;top:72%!important}.node.inverter{left:67%!important;top:42%!important}.node.ups-switch{left:34%!important;top:72%!important}.node.load{left:67%!important;top:72%!important}
+      .puzzle-kicker{font-size:.62rem}.puzzle-progress{font-size:.68rem}
+    }
+    .eyebrow { margin:0 0 10px; color:var(--green); font-size:.75rem; font-weight:700; letter-spacing:.22em; text-transform:uppercase }
+    h1 { margin:0; font:600 clamp(2.3rem, 7vw, 4rem)/1.1 'Playfair Display',serif; letter-spacing:-.035em }
+    .intro { margin:13px auto 34px; color:#766d67; font-size:.97rem }
+    .gift { width:min(100%, 480px); height:330px; margin:0 auto; position:relative; perspective:1200px; outline:none; -webkit-tap-highlight-color:transparent; transition:width .7s ease,height .7s ease }
+    .gift:focus-visible { border-radius:14px; outline:3px solid #a8323d88; outline-offset:10px }
+    .book { position:absolute; z-index:4; left:50%; top:50%; width:min(900px,96vw); height:min(590px,76vh); min-height:390px; transform:translate(-50%,-42%) scale(.82); opacity:0; pointer-events:none; perspective:1500px;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.2,.8,.2,1),opacity .35s ease,width .65s ease,height .65s ease; filter:drop-shadow(0 22px 28px #49352a30) }
+    .book-cover {position:absolute;z-index:10;left:50%;top:0;width:min(88%,700px);height:100%;transform:translateX(-50%);transform-origin:left center;transform-style:preserve-3d;backface-visibility:hidden;background:#f5eee7;box-shadow:0 20px 46px #28162f66;overflow:visible;transition:transform 1s cubic-bezier(.2,.75,.2,1)}
+    .book-cover img {display:block;width:100%;height:100%;object-fit:contain;background:transparent;border:0;box-shadow:none}
+    .book.front-facing {aspect-ratio:1082 / 1454}
+    .book.front-facing .book-cover {width:100%}
+    .book-cover .page-corner {right:0;bottom:0}
+    .book-shell {opacity:0;pointer-events:none;transform:rotateX(0);transform-origin:50% 88%;transform-style:preserve-3d;transition:opacity .45s .25s,transform .85s cubic-bezier(.2,.75,.2,1)}
+    .gift.book-cover-visible .book {opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
+    .gift.book-open .book-cover {transform:translateX(-50%) rotateY(-172deg);pointer-events:none}
+    .gift.book-open .book::before {opacity:0}
+    .gift.book-open .book-shell {opacity:1;pointer-events:auto}
+    .gift.book-open .book-shell {transform:none}
+    .book-shell { width:100%;height:100%;position:relative;display:grid;grid-template-columns:1fr 1fr;perspective:1600px }
+    .book::before { content:''; position:absolute;left:50%;top:10px;bottom:10px;width:13px;transform:translateX(-50%);background:linear-gradient(90deg,#9c6827,#f0d99c 42%,#a87832 58%,#754d20);z-index:8;border-radius:5px;box-shadow:0 0 7px #5b3b2522 }
+    .page { position:relative; overflow:hidden; padding:clamp(42px,5vw,68px); border:1px solid #c28b2d; background-color:#fff8e8;background-image:radial-gradient(ellipse at 20% 30%,#fffdf3 0,transparent 42%),radial-gradient(ellipse at 80% 75%,#f4e2bd66 0,transparent 46%),repeating-linear-gradient(0deg,#7b4f2310 0,#7b4f2310 1px,transparent 1px,transparent 5px),radial-gradient(#c28b2d30 .65px,transparent .8px);background-size:auto,auto,100% 7px,8px 8px;text-align:left;transition:transform .75s cubic-bezier(.2,.8,.2,1),filter .75s }
+    .page.left { border-radius:12px 0 0 12px;box-shadow:inset -12px 0 18px -18px #3c261e }
+    .page.right { border-radius:0 12px 12px 0;box-shadow:inset 12px 0 18px -18px #3c261e }
+    .book-spread {position:absolute;inset:0;display:none;grid-template-columns:1fr 1fr;transform-style:preserve-3d}
+    .gift.book-open .book-spread.active {display:grid;animation:page-turn-in .7s cubic-bezier(.16,.8,.25,1) both}
+    .gift.book-open .back-cover-spread.active {display:block}
+    @keyframes pop-page {0%{transform:scale(.72) translateY(24px);opacity:0}70%{transform:scale(1.04) translateY(-4px);opacity:1}100%{transform:scale(1) translateY(0);opacity:1}}
+    @keyframes page-turn-in {0%{opacity:0;transform:rotateY(-28deg) translateX(28px)}100%{opacity:1;transform:rotateY(0) translateX(0)}}
+    .places-page {display:block;padding:0}
+    .places-grid {position:absolute;inset:4% 4.5% 5%;}
+    .places-left .places-grid {inset:14% 4.5% 5%}
+    .places-page p.places-heading {position:absolute;z-index:2;top:3%;left:4%;right:4%;max-width:none;margin:0;text-align:center;color:var(--rose-dark);font-family:'Playfair Display',Georgia,serif;font-size:clamp(.9rem,1.35vw,1.2rem);font-weight:600;line-height:1.2;letter-spacing:.025em}
+    .place-card {position:absolute;min-width:0;min-height:0;margin:0;padding:7px;overflow:hidden;border:0;border-radius:2px;background:#fffdf5;box-shadow:0 7px 17px #321b3b36,0 1px 3px #321b3b25}
+    .place-card img {display:block;width:100%;height:100%;object-fit:contain;background:#f0e8d8}
+    .places-left .kalpakkam {left:0;top:4%;width:58%;height:35%;transform:rotate(-3.5deg);z-index:1}
+    .places-left .temple {left:59%;top:3%;width:34%;height:53%;transform:rotate(3.2deg);z-index:2}
+    .places-left .vit {left:3%;top:51%;width:43%;height:40%;transform:rotate(2.8deg);z-index:3}
+    .places-left .surat {left:52%;top:63%;width:44%;height:30%;transform:rotate(-2.6deg);z-index:4}
+    .places-right .schneider {left:2%;top:4%;width:57%;height:37%;transform:rotate(-2.4deg);z-index:2}
+    .places-right .central {left:63%;top:2%;width:31%;height:60%;transform:rotate(3deg);z-index:4}
+    .places-right .marina {left:22%;top:48%;width:46%;height:42%;transform:rotate(-2.5deg);z-index:3}
+    .people-page {padding:0}
+    .people-grid {position:absolute;inset:4% 5% 19%}
+    .people-left .people-grid {inset:3% 3%}
+    .people-right .people-grid {inset:4% 5% 25%}
+    .people-card {position:absolute;margin:0;padding:7px;background:#fffdf5;box-shadow:0 7px 17px #321b3b36,0 1px 3px #321b3b25;overflow:hidden}
+    .people-card img {display:block;width:100%;height:100%;object-fit:cover}
+    .people-left .people-card img {object-fit:contain;background:#f3ead6}
+    .people-left .family {left:0;top:8%;width:56%;height:67%;transform:rotate(-3.5deg);z-index:1}
+    .people-left .childhood {left:54%;top:0;width:43%;height:43%;transform:rotate(3.2deg);z-index:2}
+    .people-left .dad {left:33%;top:50%;width:64%;height:46%;transform:rotate(-2.4deg);z-index:3}
+    .people-right .couple {left:4%;top:11%;width:54%;height:78%;transform:rotate(-3deg);z-index:1}
+    .people-right .portrait {left:59%;top:4%;width:36%;height:60%;transform:rotate(3.5deg);z-index:2}
+    .people-note-ink {position:absolute;left:12%;bottom:4%;width:76%;height:17%;object-fit:contain;filter:drop-shadow(0 1px 0 #967a54aa) drop-shadow(0 -1px 0 #fff7);pointer-events:none}
+    .back-cover-panel {position:absolute;inset:0;overflow:hidden;background:#fff4d9;box-shadow:0 18px 42px #28162f55;border:1px solid #d1a744}
+    .back-cover-panel img {display:block;width:100%;height:100%;object-fit:cover}
+    .back-cover-panel .home-corner {top:0;left:0;right:auto;bottom:auto}
+    .back-cover-panel .previous-spread {right:auto;left:0;clip-path:polygon(0 0,100% 100%,0 100%);place-items:end start;padding:0 0 5px 7px;background:linear-gradient(45deg,#ffe21a,#c28b2d 51%,transparent 52%)}
+    .back-inside {background-color:#fff8e8;background-image:radial-gradient(#c28b2d22 .8px,transparent .8px);background-size:12px 12px}
+    .custom-message {display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:clamp(24px,5vw,64px)}
+    .custom-message h2 {margin:22px 0 14px}
+    .message-placeholder {max-width:340px;padding:15px 17px;border-left:2px solid #c28b2d;background:#fffdf366;color:#887a70;font:italic .9rem/1.7 'Playfair Display',serif}
+    .page::after {content:none}
+    .page-kicker { position:relative;z-index:1;margin:0;color:#9a7d57;font-size:.64rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase }
+    .page h2 { position:relative;z-index:1;margin:28px 0 12px;color:var(--rose-dark);font:600 clamp(1.7rem,4vw,2.35rem)/1.08 'Playfair Display',serif }
+    .page p { position:relative;z-index:1;max-width:290px;margin:0;color:#71645c;font-size:.88rem;line-height:1.65 }
+    .book-signature {position:relative;z-index:1;margin-top:22px;color:#8b6b50;font:italic 1.04rem 'Playfair Display',serif}
+    .page-corner {position:absolute;z-index:14;right:0;bottom:0;width:54px;height:54px;display:grid;place-items:end;padding:0 7px 5px;border:0;background:linear-gradient(135deg,transparent 48%,#c28b2d 49%,#ffe21a 100%);clip-path:polygon(0 100%,100% 0,100% 100%);color:#61278c;font:700 18px 'DM Sans',sans-serif;cursor:pointer;transition:filter .2s,transform .2s}
+    .page-corner.home-corner {top:0;left:0;right:auto;bottom:auto;clip-path:polygon(0 0,100% 0,0 100%);place-items:start;padding:7px 0 0 7px;background:linear-gradient(135deg,#ffe21a,#c28b2d 51%,transparent 52%)}
+    .page.left .page-corner {right:auto;left:0;clip-path:polygon(0 0,100% 100%,0 100%);place-items:end start;padding:0 0 5px 7px;background:linear-gradient(45deg,#ffe21a,#c28b2d 51%,transparent 52%)}
+    .page.left .page-corner.home-corner {top:0;bottom:auto;clip-path:polygon(0 0,100% 0,0 100%);place-items:start;padding:7px 0 0 7px;background:linear-gradient(135deg,#ffe21a,#c28b2d 51%,transparent 52%)}
+    .page-corner:hover {filter:brightness(1.1);transform:scale(1.08);transform-origin:bottom right}
+    .page-corner.home-corner:hover {transform-origin:top left}
+    .page-corner:focus-visible {outline:3px solid #c28b2d;outline-offset:3px}
+    @keyframes beacon {0%,100%{box-shadow:0 2px 8px #38231f55,0 0 0 0 #c28b2d77}50%{box-shadow:0 2px 8px #38231f55,0 0 0 7px #c28b2d00}}
+    .card { position:absolute; z-index:2; width:82%; height:275px; left:9%; top:5px; padding:27px 27px 22px; border:1px solid #c28b2d; border-radius:6px; background-color:#fff8e8; background-image:radial-gradient(#c28b2d25 .8px,transparent .8px); background-size:10px 10px; box-shadow:0 16px 35px #49352a22; transform:translateY(95px) scale(.92); opacity:0; transition:transform .9s cubic-bezier(.2,.75,.2,1), opacity .55s ease; text-align:left; }
+    .card::before { content:''; position:absolute; inset:8px; border:1px solid #285d4577; border-radius:3px; pointer-events:none }
+    .card-top { display:flex; justify-content:space-between; align-items:center; color:#9a7d57; font-size:.68rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase }
+    .stamp { width:33px;height:33px;border:1px solid var(--gold);border-radius:50%;display:grid;place-items:center;font-size:1rem;color:var(--rose) }
+    .card-content { position:relative; z-index:1; margin-top:24px }
+    .card h2 { margin:0 0 9px; color:var(--rose-dark); font:600 clamp(1.7rem,5vw,2.2rem)/1.12 'Playfair Display',serif }
+    .card p { max-width:310px; margin:0; color:#71645c; font-size:.87rem; line-height:1.6 }
+    .signature { margin-top:17px; color:#8b6b50; font:italic 1rem 'Playfair Display',serif }
+    .card-bottom { position:absolute; left:27px; right:27px; bottom:20px; display:flex; justify-content:space-between; color:#a28b72; font-size:.64rem; letter-spacing:.11em; text-transform:uppercase }
+    .envelope { position:absolute; z-index:3; left:0; right:0; bottom:15px; height:205px; border-radius:5px 5px 12px 12px; background:#a8323d; box-shadow:0 25px 40px #5135372e; transition:transform .8s ease .2s }
+    .env-front { position:absolute; inset:0; overflow:hidden; border-radius:5px 5px 12px 12px; background:linear-gradient(155deg,#bb4850,#8e2536); clip-path:polygon(0 0,50% 54%,100% 0,100% 100%,0 100%); }
+    .env-side { position:absolute; inset:0; overflow:hidden; border-radius:5px 5px 12px 12px; background:linear-gradient(25deg,#81283a,#ad3d48); clip-path:polygon(0 0,50% 57%,0 100%); }
+    .env-side.right { background:linear-gradient(335deg,#81283a,#ad3d48); clip-path:polygon(100% 0,50% 57%,100% 100%) }
+    .flap { position:absolute; z-index:2; top:0; left:0; width:100%; height:58%; background:linear-gradient(170deg,#d39b39,#bd7925); clip-path:polygon(0 0,100% 0,50% 100%); transform-origin:top; transition:transform .65s ease, z-index .01s .32s }
+    .seal { position:absolute; z-index:4; top:42%; left:50%; transform:translate(-50%,-50%); width:54px;height:54px;border:2px solid #8d174b;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#fff4bd,#d7a739);box-shadow:0 3px 9px #553b332e;transition:opacity .2s ease }
+    .seal-heart {color:#e34234;font:700 1.65rem/1 'DM Sans',sans-serif;text-shadow:0 1px 0 #fff7}
+    .hint { margin:22px 0 0; color:#887a70; font-size:.82rem; letter-spacing:.03em }
+    .gift.open {width:min(100%,820px);height:530px;z-index:7}
+    .gift.open .flap { transform:rotateX(180deg); z-index:0 }
+    .gift.open .seal { opacity:0 }
+    .gift.open .card { opacity:0; transform:translateY(100px) scale(.9);pointer-events:none }
+    .gift.open .envelope { transform:translateY(180px) scale(.65);opacity:0;pointer-events:none;transition:transform .7s ease,opacity .4s ease .25s }
+    .gift.book-open .book {opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1);transition-delay:.15s}
+    .gift.book-open .envelope {z-index:0}
+    .gift.open .hint { color:var(--rose-dark) }
+    body.reading {display:block;overflow:auto;min-height:100svh}
+    body.reading .scene {width:100%;height:100svh;min-height:580px;padding:0;display:grid;place-items:center}
+    body.reading .scene > .eyebrow, body.reading .scene > h1, body.reading .scene > .intro, body.reading .scene > .circuit, body.reading .scene > .hint {opacity:0;visibility:hidden;pointer-events:none;position:absolute;transition:opacity .35s,visibility .35s}
+    body.reading .gift.open {position:absolute;inset:0;width:100%;height:100svh;min-height:580px;margin:0;display:grid;place-items:center}
+    body.reading .book {width:min(calc(100vw - 110px),1500px);height:min(calc(100vh - 150px),900px);min-height:420px;top:50%;transform:translate(-50%,-50%) scale(.9)}
+    body.reading .gift.open .book.front-facing, body.reading .gift.book-open .book.back-facing {width:min(88vw,670px,calc(74.4svh - 97px));height:auto;aspect-ratio:1082 / 1454;min-height:0}
+    body.reading .gift.book-cover-visible .book {transform:translate(-50%,-50%) scale(1)}
+    body.reading .gift.book-open .book {transform:translate(-50%,-50%) scale(1)}
+    body.reading .page {padding:clamp(46px,6vw,94px);background-color:#fffbe8;background-image:radial-gradient(ellipse at 20% 30%,#fffdf5 0,transparent 44%),radial-gradient(ellipse at 80% 75%,#f0dfbd70 0,transparent 48%),repeating-linear-gradient(0deg,#7b4f2312 0,#7b4f2312 1px,transparent 1px,transparent 6px),radial-gradient(#61278c22 .7px,transparent .85px);background-size:auto,auto,100% 8px,9px 9px}
+    body.reading .page::after {inset:13px;background-size:150px 32px;mask-size:100% 30px,100% 30px,30px 100%,30px 100%}
+    body.reading .page h2 {font-size:clamp(2.4rem,5.5vw,5rem);margin-top:clamp(48px,8vh,110px)}
+    body.reading .people-page {padding:0}
+    body.reading .page p {max-width:620px;font-size:clamp(1.08rem,1.7vw,1.5rem);line-height:1.85}
+    body.reading .page-kicker {font-size:clamp(.68rem,1vw,.9rem);color:var(--purple)}
+    body.reading .book-signature {font-size:clamp(1rem,1.8vw,1.45rem);color:var(--purple)}
+    body.reading .places-page {padding:0}
+    body.reading .places-page p.places-heading {max-width:none;font-family:'Playfair Display',Georgia,serif;font-size:clamp(.7rem,1.35vw,1.15rem);font-weight:600;line-height:1.2}
+    body.reading .book::before {width:19px;background:linear-gradient(90deg,#8d174b,#ffe21a 42%,#e34234 58%,#61278c)}
+    body.reading .note {opacity:0;transition:opacity .25s}
+    body.reading .motif {width:56px;height:56px;background:#fffbe8e8;border-color:#e34234}
+    body.reading .kolam {opacity:.25}
+    .motif.rama,.motif.narasimha {color:#e34234}.motif.krishna {color:#4420a0}
+    .stamp {border-color:var(--electric);background:var(--purple);color:var(--electric)}
+    .krishna-art {position:absolute;z-index:4;right:18px;bottom:16px;width:72px;height:72px;aspect-ratio:1;border:3px solid #ffe21a;border-radius:50%;overflow:hidden;box-shadow:inset 0 2px 5px #fff8a688,0 3px 9px #571e3b66,0 0 0 2px #61278c;background:#251466;pointer-events:none}
+    .krishna-art img {display:block;width:100%;height:100%;object-fit:cover}
+    body.reading .krishna-art {opacity:0}
+    .envelope {background:var(--tomato)}
+    .env-front {background:linear-gradient(155deg,#ff6550,#d92e35)}
+    .env-side {background:linear-gradient(25deg,#a71e47,#e34234)}
+    .env-side.right {background:linear-gradient(335deg,#a71e47,#e34234)}
+    .flap {background:linear-gradient(170deg,#ffe21a,#f2a900)}
+    .seal {background:radial-gradient(circle at 35% 30%,#7b38a5,#4c176e);color:#e34234}
+    .sparkle { position:absolute; color:#c28b2d; font-size:1.1rem; opacity:.7; animation:float 4s ease-in-out infinite;display:none }
+    .motif { position:fixed; z-index:0; display:grid; place-items:center; width:70px;height:70px; border:1px solid #c28b2d88; border-radius:50%; color:#285d45; background:#fff8e8cc; box-shadow:0 4px 14px #60441c18; }
+    .motif {display:none}
+    .motif svg { width:49px;height:49px; overflow:visible }
+    .motif.rama { top:8%; left:7% }.motif.krishna { top:8%; right:7%; color:#245b83 }.motif.narasimha { bottom:7%; left:7%; color:#a8323d }
+    .kolam { position:fixed; z-index:0; width:82px;height:82px; opacity:.6 }
+    .kolam.top-left{top:20px;left:20px}.kolam.top-right{top:20px;right:20px;transform:rotate(90deg)}.kolam.bottom-left{bottom:20px;left:20px;transform:rotate(-90deg)}.kolam.bottom-right{bottom:20px;right:20px;transform:rotate(180deg)}
+    .circuit { position:relative; z-index:1; display:inline-flex; align-items:center; gap:8px; margin-top:15px; padding:7px 13px; border:1px solid #285d4555; border-radius:100px; background:#fff8e8ad; color:var(--green); font-size:.72rem; letter-spacing:.025em; text-transform:none }
+    .s1{top:17%;left:13%}.s2{top:38%;right:11%;animation-delay:1s}.s3{bottom:15%;left:20%;animation-delay:2s}.s4{bottom:27%;right:17%;animation-delay:.5s}
+    @keyframes float { 50% { transform:translateY(-9px) rotate(12deg); opacity:.9 } }
+    .note {display:none}
+    .ambient-krishna {position:fixed;z-index:0;right:3vw;bottom:3vh;width:clamp(120px,19vw,250px);aspect-ratio:1;border-radius:50%;overflow:hidden;opacity:.13;filter:saturate(1.2);box-shadow:0 0 0 9px #ffe21a33,0 0 0 18px #61278c18;pointer-events:none;transition:opacity .5s,transform .5s}
+    .ambient-krishna img {width:100%;height:100%;display:block;object-fit:cover}
+    body.reading .ambient-krishna {opacity:0;transform:scale(.8)}
+    @media(max-width:600px) { .scene{padding-top:16px}.eyebrow{font-size:.65rem}h1{font-size:clamp(2rem,9vw,3rem)}.intro{margin:9px auto 17px;font-size:.84rem}.circuit{margin-top:5px;font-size:.6rem}.gift{height:290px}.gift.open{height:470px}.envelope{height:185px;bottom:10px}.book{width:96vw;height:370px;min-height:0;transform:translate(-50%,-43%) scale(.75)}.gift.book-open .book{transform:translate(-50%,-50%) scale(1)}.page{padding:25px 19px 22px}.page h2{margin:22px 0 10px;font-size:1.55rem}.page p{font-size:.75rem;line-height:1.5}.book-signature{font-size:.86rem;margin-top:14px}.page-kicker{font-size:.52rem;letter-spacing:.1em}.motif{width:53px;height:53px}.motif svg{width:38px;height:38px}.motif.rama{top:4%;left:4%}.motif.krishna{top:4%;right:4%}.motif.narasimha{bottom:4%;left:4%}.kolam{width:55px;height:55px}body::before{background-size:100% 100%;background-position:center;opacity:1}body::after{inset:9px}.note{bottom:9px;font-size:.58rem}.ambient-krishna{right:4vw;bottom:10vh;width:110px}body.reading .scene{min-height:530px}body.reading .gift.open{min-height:530px}body.reading .book{width:98vw;height:65vh;min-height:400px}body.reading .page{padding:27px 19px}body.reading .page h2{font-size:clamp(1.55rem,7vw,2.4rem);margin-top:32px}body.reading .page p{font-size:.82rem;line-height:1.55}body.reading .page-kicker{font-size:.55rem}body.reading .book-signature{font-size:.86rem}body.reading body.reading body.reading .motif{width:42px;height:42px}body.reading .motif svg{width:30px;height:30px}body.reading .krishna-art{width:90px;right:16px;bottom:48px} }
+    @media(max-width:600px) { .scene{padding-top:16px}.eyebrow{font-size:.65rem}h1{font-size:clamp(2rem,9vw,3rem)}.intro{margin:9px auto 17px;font-size:.84rem}.circuit{margin-top:5px;font-size:.56rem;padding:7px 9px}.gift{height:290px}.gift.open{height:470px}.envelope{height:185px;bottom:10px}.book{width:96vw;height:370px;min-height:0;transform:translate(-50%,-43%) scale(.75)}.gift.book-open .book{transform:translate(-50%,-50%) scale(1)}.page{padding:25px 19px 22px}.page h2{margin:22px 0 10px;font-size:1.55rem}.page p{font-size:.75rem;line-height:1.5}.book-signature{font-size:.86rem;margin-top:14px}.page-kicker{font-size:.52rem;letter-spacing:.1em}.motif{width:53px;height:53px}.motif svg{width:38px;height:38px}.motif.rama{top:4%;left:4%}.motif.krishna{top:4%;right:4%}.motif.narasimha{bottom:4%;left:4%}.kolam{width:55px;height:55px}body::before{background-size:100% 100%;background-position:center;opacity:1}body::after{inset:9px}.note{bottom:9px;font-size:.58rem}.ambient-krishna{right:4vw;bottom:10vh;width:110px}body.reading .scene{min-height:530px}body.reading .gift.open{min-height:530px}body.reading .book{width:calc(100vw - 42px);height:min(calc(100svh - 130px),680px);min-height:360px}body.reading .page{padding:30px 22px;background-size:auto,auto,100% 7px,8px 8px}body.reading .page h2{font-size:clamp(1.7rem,7vw,2.7rem);margin-top:38px}body.reading .page p{font-size:.9rem;line-height:1.65}body.reading .page-kicker{font-size:.59rem}body.reading .book-signature{font-size:.92rem}body.reading body.reading .motif{width:42px;height:42px}body.reading .motif svg{width:30px;height:30px}body.reading .krishna-art{width:90px;right:16px;bottom:48px} }
+    @media(prefers-reduced-motion:reduce) { *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important} }
+  </style>
+</head>
+<body>
+  <div class="party-backdrop" aria-hidden="true">
+    <span class="party-star" style="left:8%;top:14%">✦</span><span class="party-confetti" style="left:19%;top:8%"></span><span class="party-star" style="left:28%;top:24%">✧</span><span class="party-balloon" style="left:38%;top:12%"></span>
+    <span class="party-confetti" style="left:48%;top:18%"></span><span class="party-star" style="left:59%;top:9%">✦</span><span class="party-confetti" style="left:70%;top:22%"></span><span class="party-balloon" style="left:83%;top:13%"></span><span class="party-star" style="left:92%;top:29%">✧</span>
+    <span class="party-balloon" style="left:11%;top:46%"></span><span class="party-star" style="left:22%;top:61%">✦</span><span class="party-confetti" style="left:32%;top:52%"></span><span class="party-star" style="left:73%;top:58%">✧</span><span class="party-confetti" style="left:89%;top:49%"></span>
+    <span class="party-star" style="left:7%;top:83%">✧</span><span class="party-balloon" style="left:25%;top:79%"></span><span class="party-confetti" style="left:43%;top:91%"></span><span class="party-star" style="left:57%;top:82%">✦</span><span class="party-balloon" style="left:77%;top:84%"></span><span class="party-confetti" style="left:94%;top:88%"></span>
+  </div>
+  <section class="diwali-intake" aria-labelledby="diwali-form-title">
+    <form class="diwali-form-card" id="diwali-gift-form">
+      <p class="diwali-form-kicker">A note from the ITSM Leadership · Diwali 2026</p>
+      <h1 id="diwali-form-title">A little something, with thanks</h1>
+      <p class="diwali-form-intro">Thank you for all the care, commitment, and hard work you bring to the team. We’d love to send you a small Diwali gift as a token of our appreciation. Share your delivery details and choose the gift you’d enjoy most.</p>
+      <div class="diwali-fields">
+        <div class="diwali-field"><label for="recipient-name">Your name</label><input id="recipient-name" name="name" autocomplete="name" required></div>
+        <div class="diwali-field"><label for="recipient-email">Email address</label><input id="recipient-email" name="email" type="email" autocomplete="email" required></div>
+        <div class="diwali-field"><label for="recipient-employee-id">Employee ID</label><input id="recipient-employee-id" name="employee-id" autocomplete="off" required></div>
+        <div class="diwali-field"><label for="recipient-phone">Phone number</label><input id="recipient-phone" name="phone" type="tel" autocomplete="tel" required></div>
+        <div class="diwali-field full"><label for="recipient-address">Delivery address</label><textarea id="recipient-address" name="address" autocomplete="street-address" required></textarea></div>
+        <div class="diwali-field"><label for="recipient-city">City</label><input id="recipient-city" name="city" autocomplete="address-level2" required></div>
+        <div class="diwali-field"><label for="recipient-state">State</label><input id="recipient-state" name="state" autocomplete="address-level1" required></div>
+        <fieldset class="gift-choice"><legend>Choose your Diwali gift</legend><div class="gift-options">
+          <div class="gift-option"><input id="gift-hoodie" name="gift" type="radio" value="Hoodie" required><label for="gift-hoodie">Hoodie</label></div>
+          <div class="gift-option"><input id="gift-duffel" name="gift" type="radio" value="Duffel bag"><label for="gift-duffel">Duffel bag</label></div>
+          <div class="gift-option"><input id="gift-card" name="gift" type="radio" value="Gift card"><label for="gift-card">Gift card</label></div>
+        </div></fieldset>
+        <fieldset class="hoodie-size-panel" id="hoodie-size-panel" hidden disabled><legend>Choose a size</legend><div class="hoodie-size-options">
+          <div class="hoodie-size-option"><input id="size-s" name="hoodie-size" type="radio" value="S" required><label for="size-s">S</label></div>
+          <div class="hoodie-size-option"><input id="size-m" name="hoodie-size" type="radio" value="M"><label for="size-m">M</label></div>
+          <div class="hoodie-size-option"><input id="size-l" name="hoodie-size" type="radio" value="L"><label for="size-l">L</label></div>
+          <div class="hoodie-size-option"><input id="size-xl" name="hoodie-size" type="radio" value="XL"><label for="size-xl">XL</label></div>
+        </div></fieldset>
+        <p class="gift-card-details" id="gift-card-details" hidden>As a token of appreciation, a <strong>₹3,000 gift card</strong> will be issued, redeemable at Amazon, subject to applicable terms and conditions.</p>
+        <button class="diwali-submit" type="submit">Submit</button>
+      </div>
+    </form>
+  </section>
+  <div class="gift-transition" id="gift-transition" aria-hidden="true">
+    <span class="transition-spark spark-a">✦</span><span class="transition-spark spark-b">✧</span><span class="transition-spark spark-c">✧</span><span class="transition-spark spark-d">✦</span>
+    <div class="transition-message"><span class="transition-diya">🪔</span><p>A little light is on its way…</p></div>
+  </div>
+  <main class="room-stage" id="room-stage">
+    <div class="room-content">
+      <h1 class="room-title">SURPRISE!</h1>
+      <button class="ups-unit" id="ups-unit" type="button" aria-label="Tap the UPS to wake it up">
+        <img src="assets/ups-cutout.png" alt="A dark, switched-off UPS">
+      </button>
+      <div class="power-dots" id="power-dots" aria-label="UPS wake-up progress"><i></i><i></i><i></i><i></i></div>
+      <p class="room-status" id="room-status" aria-live="polite">Tap the UPS four times to bring your birthday surprise to life.</p>
+    </div>
+  </main>
+  <div class="light-flood" aria-hidden="true"></div>
+  <span class="sparkle s1" aria-hidden="true">✦</span><span class="sparkle s2" aria-hidden="true">✧</span><span class="sparkle s3" aria-hidden="true">✧</span><span class="sparkle s4" aria-hidden="true">✦</span>
+  <main class="scene">
+    <p class="eyebrow">A little shubha surprise</p>
+    <h1>A brighter year<br>is powering up…</h1>
+    <p class="intro">For the engineer who keeps every light on.</p>
+    <div class="circuit" aria-hidden="true">⚡ Dharshini N Chari, B.Tech, M.Tech (soon!) ⚡</div>
+    <div class="gift" id="gift" role="button" tabindex="0" aria-label="Open your birthday gift" aria-expanded="false">
+      <section class="book" id="book" aria-label="Birthday storybook">
+        <div class="book-cover" aria-label="Birthday book cover">
+          <img src="assets/back-cover-art.png" alt="Hand-painted birthday balloons on a warm ivory cover with a gold floral border">
+          <button class="page-corner" id="cover-turn" type="button" aria-label="Turn the cover to open the book">›</button>
+        </div>
+        <div class="book-shell">
+          <div class="book-spread places-spread" aria-label="Places you have been collage">
+            <article class="page left places-page places-left">
+              <button class="page-corner home-corner return-envelope" id="places-home" type="button" title="Return to envelope" aria-label="Close the book and return to the birthday envelope">‹</button>
+              <p class="places-heading">Places you’ve been, the miles and the moments</p>
+              <div class="places-grid">
+                <figure class="place-card kalpakkam"><img src="assets/places/kalpakkam.png" alt="Coastline and nuclear power station at Kalpakkam"></figure>
+                <figure class="place-card temple"><img src="assets/places/thanjai-mamani-koil.png" alt="Colorful Thanjai Mamani Koil gopuram with Tamil lettering"></figure>
+                <figure class="place-card vit"><img src="assets/places/vit-vellore.png" alt="VIT University campus in Vellore at night"></figure>
+                <figure class="place-card surat"><img src="assets/places/surat-station.jpg" alt="Surat railway station sign and train"></figure>
+              </div>
+            </article>
+            <article class="page right places-page places-right">
+              <div class="places-grid">
+                <figure class="place-card schneider"><img src="assets/places/schneider-electric.png" alt="Schneider Electric sign on a building"></figure>
+                <figure class="place-card central"><img src="assets/places/chennai-central.png" alt="Chennai Central railway station and clock tower"></figure>
+                <figure class="place-card marina"><img src="assets/places/chennai-marina.png" alt="Chennai Marina Beach promenade at night"></figure>
+              </div>
+              <button class="page-corner next-spread" type="button" aria-label="Turn to the people collage">›</button>
+            </article>
+          </div>
+          <div class="book-spread people-spread" aria-label="A collage of family and favorite people">
+            <article class="page left people-page people-left">
+              <button class="page-corner home-corner return-envelope" type="button" title="Return to envelope" aria-label="Close the book and return to the birthday envelope">‹</button>
+              <button class="page-corner previous-spread" type="button" aria-label="Turn back to the places collage">‹</button>
+              <div class="people-grid">
+                <figure class="people-card family"><img src="assets/people/family-portrait.jpg" alt="Family portrait"></figure>
+                <figure class="people-card childhood"><img src="assets/people/childhood-portrait.jpg" alt="A childhood portrait"></figure>
+                <figure class="people-card dad"><img src="assets/people/childhood-with-dad.jpg" alt="A childhood moment with her father"></figure>
+              </div>
+            </article>
+            <article class="page right people-page people-right">
+              <div class="people-grid">
+                <figure class="people-card couple"><img src="assets/people/couple.jpg" alt="The birthday person with a loved one"></figure>
+                <figure class="people-card portrait"><img src="assets/people/portrait.jpg" alt="A portrait in a lavender sari"></figure>
+              </div>
+              <img class="people-note-ink" src="assets/people-birthday-note.png" alt="Handwritten Happy Birthday note">
+              <button class="page-corner next-spread" type="button" aria-label="Turn to the back cover">›</button>
+            </article>
+          </div>
+          <div class="book-spread back-cover-spread" aria-label="Birthday book back cover">
+            <div class="back-cover-panel">
+              <img src="assets/back-cover-note.png" alt="A handwritten birthday wish from Srinath on a pastel candle birthday card">
+              <button class="page-corner home-corner return-envelope" type="button" title="Return to envelope" aria-label="Close the book and return to the birthday envelope">‹</button>
+              <button class="page-corner previous-spread" type="button" aria-label="Turn back to the people collage">‹</button>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="envelope" aria-hidden="true">
+        <div class="flap"></div><div class="env-side"></div><div class="env-side right"></div><div class="env-front"></div><div class="seal"><span class="seal-heart" aria-hidden="true">♥</span></div><figure class="krishna-art" aria-label="Embossed Krishna medallion"><img src="assets/krishna.png" alt=""></figure>
+      </div>
+    </div>
+    <p class="hint" id="hint">Tap the envelope to open your birthday card</p>
+  </main>
+  <script>
+    const diwaliGiftForm = document.querySelector('#diwali-gift-form');
+    const giftTransition = document.querySelector('#gift-transition');
+    const roomStage = document.querySelector('#room-stage');
+    const hoodieSizePanel = document.querySelector('#hoodie-size-panel');
+    const giftCardDetails = document.querySelector('#gift-card-details');
+    diwaliGiftForm.querySelectorAll('input[name="gift"]').forEach(option => option.addEventListener('change', () => {
+      const hoodieChosen = option.value === 'Hoodie' && option.checked;
+      const giftCardChosen = option.value === 'Gift card' && option.checked;
+      hoodieSizePanel.hidden = !hoodieChosen;
+      hoodieSizePanel.disabled = !hoodieChosen;
+      giftCardDetails.hidden = !giftCardChosen;
+    }));
+    diwaliGiftForm.addEventListener('submit', event => {
+      event.preventDefault();
+      if (!diwaliGiftForm.reportValidity()) return;
+      diwaliGiftForm.reset();
+      giftTransition.classList.remove('exit');
+      document.body.classList.add('transitioning');
+      window.setTimeout(() => {
+        document.body.classList.remove('transitioning');
+        document.body.classList.add('show-ups');
+        giftTransition.classList.add('exit');
+        document.querySelector('#ups-unit').focus({preventScroll:true});
+        window.setTimeout(() => giftTransition.classList.remove('exit'), 700);
+      }, 1750);
+    });
+    const upsUnit = document.querySelector('#ups-unit');
+    const roomStatus = document.querySelector('#room-status');
+    const powerDots = [...document.querySelectorAll('#power-dots i')];
+    let taps = 0;
+    let powered = false;
+    upsUnit.addEventListener('click', () => {
+      if (powered) return;
+      taps = Math.min(taps + 1, 4);
+      upsUnit.classList.remove('bump');
+      void upsUnit.offsetWidth;
+      upsUnit.classList.add('bump');
+      powerDots.forEach((dot, index) => dot.classList.toggle('on', index < taps));
+      const messages = [
+        'A faint hum… give it another tap.',
+        'The backup is waking up…',
+        'One more tap for the lights.',
+        'Power restored. Your birthday surprise is ready!'
+      ];
+      roomStatus.textContent = messages[taps - 1];
+      if (taps === 4) {
+        powered = true;
+        roomStage.classList.add('lit');
+        document.body.classList.add('lights-on');
+        document.querySelector('.room-title').textContent = 'Lights on!';
+        window.setTimeout(() => {
+          roomStage.classList.add('fade');
+          window.setTimeout(() => {
+            document.body.classList.add('unlocked');
+            document.body.classList.remove('lights-on');
+          }, 850);
+        }, 1050);
+      }
+    });
+
+    const gift = document.querySelector('#gift');
+    const book = document.querySelector('#book');
+    const hint = document.querySelector('#hint');
+    let bookOpen = false;
+    let closingBook = false;
+    function openEnvelope() {
+      if (bookOpen) return;
+      bookOpen = true;
+      book.classList.remove('back-facing');
+      book.classList.add('front-facing');
+      document.body.classList.add('reading');
+      gift.classList.add('open');
+      gift.setAttribute('aria-expanded', 'true');
+      hint.textContent = 'The birthday book is waiting inside';
+      window.setTimeout(() => {
+        gift.classList.add('book-cover-visible');
+        hint.textContent = 'Turn the lower corner to open your book';
+      }, 720);
+    }
+    document.querySelector('#cover-turn').addEventListener('click', () => {
+      if (!bookOpen || closingBook) return;
+      book.classList.remove('back-facing');
+      book.classList.remove('front-facing');
+      document.querySelectorAll('.book-spread').forEach(spread => spread.classList.remove('active'));
+      document.querySelector('.places-spread').classList.add('active');
+      gift.classList.add('book-open');
+      hint.textContent = 'Places you’ve been — and a note just for you';
+    });
+    function showSpread(target, message) {
+      document.querySelectorAll('.book-spread').forEach(spread => spread.classList.remove('active'));
+      document.querySelector(target).classList.add('active');
+      book.classList.toggle('back-facing', target === '.back-cover-spread');
+      hint.textContent = message;
+    }
+    document.querySelectorAll('.next-spread').forEach(button => button.addEventListener('click', () => {
+      if (button.closest('.places-spread')) showSpread('.people-spread', 'A little album of favorite people');
+      else showSpread('.back-cover-spread', 'The back cover');
+    }));
+    document.querySelectorAll('.previous-spread').forEach(button => button.addEventListener('click', () => {
+      if (button.closest('.back-cover-spread')) showSpread('.people-spread', 'A little album of favorite people');
+      else showSpread('.places-spread', 'Places you’ve been — and a note just for you');
+    }));
+    gift.addEventListener('click', event => {
+      if (!bookOpen && !event.target.closest('.page-corner, .place')) openEnvelope();
+    });
+    gift.addEventListener('keydown', event => {
+      if ((event.key === 'Enter' || event.key === ' ') && !bookOpen) { event.preventDefault(); openEnvelope(); }
+    });
+    function returnToEnvelope() {
+      if (!bookOpen || closingBook) return;
+      closingBook = true;
+      gift.classList.remove('book-open');
+      hint.textContent = 'Returning to your birthday envelope';
+      window.setTimeout(() => {
+        gift.classList.remove('book-cover-visible','open');
+        document.body.classList.remove('reading');
+        bookOpen = false;
+        closingBook = false;
+        gift.setAttribute('aria-expanded', 'false');
+        hint.textContent = 'Tap the envelope to open your birthday card';
+      }, 1050);
+    }
+    document.querySelectorAll('.return-envelope').forEach(button => button.addEventListener('click', returnToEnvelope));
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && bookOpen) returnToEnvelope();
+    });
+  </script>
+</body>
+</html>
