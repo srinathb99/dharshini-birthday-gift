@@ -4,4 +4,4 @@ A static birthday gift experience built with HTML, CSS, JavaScript, and local im
 
 ## GitHub Pages
 
-This project can be published directly from the repository root with GitHub Pages. In the repository settings, choose **Pages**, select the `main` branch and `/ (root)` folder, then save.
+The included GitHub Actions workflow publishes the site on every push to `main`. In the repository settings, choose **Pages** and set the build and deployment source to **GitHub Actions**. The first workflow run will publish the site.
