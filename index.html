@@ -349,7 +349,10 @@
         <div class="diwali-field"><label for="recipient-phone">Phone number</label><input id="recipient-phone" name="phone" type="tel" autocomplete="tel" required></div>
         <div class="diwali-field full"><label for="recipient-address">Delivery address</label><textarea id="recipient-address" name="address" autocomplete="street-address" required></textarea></div>
         <div class="diwali-field"><label for="recipient-city">City</label><input id="recipient-city" name="city" autocomplete="address-level2" required></div>
-        <div class="diwali-field"><label for="recipient-state">State</label><input id="recipient-state" name="state" autocomplete="address-level1" required></div>
+        <div class="diwali-field"><label for="recipient-state">State / Union Territory</label><input id="recipient-state" name="state" list="indian-states" autocomplete="address-level1" placeholder="Type to search…" required><datalist id="indian-states">
+          <option value="Andhra Pradesh"></option><option value="Arunachal Pradesh"></option><option value="Assam"></option><option value="Bihar"></option><option value="Chhattisgarh"></option><option value="Goa"></option><option value="Gujarat"></option><option value="Haryana"></option><option value="Himachal Pradesh"></option><option value="Jharkhand"></option><option value="Karnataka"></option><option value="Kerala"></option><option value="Madhya Pradesh"></option><option value="Maharashtra"></option><option value="Manipur"></option><option value="Meghalaya"></option><option value="Mizoram"></option><option value="Nagaland"></option><option value="Odisha"></option><option value="Punjab"></option><option value="Rajasthan"></option><option value="Sikkim"></option><option value="Tamil Nadu"></option><option value="Telangana"></option><option value="Tripura"></option><option value="Uttar Pradesh"></option><option value="Uttarakhand"></option><option value="West Bengal"></option>
+          <option value="Andaman and Nicobar Islands"></option><option value="Chandigarh"></option><option value="Dadra and Nagar Haveli and Daman and Diu"></option><option value="Delhi"></option><option value="Jammu and Kashmir"></option><option value="Ladakh"></option><option value="Lakshadweep"></option><option value="Puducherry"></option>
+        </datalist></div>
         <fieldset class="gift-choice"><legend>Choose your Diwali gift</legend><div class="gift-options">
           <div class="gift-option"><input id="gift-hoodie" name="gift" type="radio" value="Hoodie" required><label for="gift-hoodie">Hoodie</label></div>
           <div class="gift-option"><input id="gift-duffel" name="gift" type="radio" value="Duffel bag"><label for="gift-duffel">Duffel bag</label></div>
@@ -454,6 +457,15 @@
     const roomStage = document.querySelector('#room-stage');
     const hoodieSizePanel = document.querySelector('#hoodie-size-panel');
     const giftCardDetails = document.querySelector('#gift-card-details');
+    const recipientState = document.querySelector('#recipient-state');
+    const indianStateOptions = [...document.querySelectorAll('#indian-states option')].map(option => option.value);
+    function validateRecipientState() {
+      const enteredState = recipientState.value.trim();
+      const matchedState = indianStateOptions.find(state => state.toLocaleLowerCase() === enteredState.toLocaleLowerCase());
+      recipientState.setCustomValidity(enteredState && !matchedState ? 'Choose a state or union territory from the suggestions.' : '');
+      if (matchedState) recipientState.value = matchedState;
+    }
+    recipientState.addEventListener('input', () => recipientState.setCustomValidity(''));
     diwaliGiftForm.querySelectorAll('input[name="gift"]').forEach(option => option.addEventListener('change', () => {
       const hoodieChosen = option.value === 'Hoodie' && option.checked;
       const giftCardChosen = option.value === 'Gift card' && option.checked;
@@ -463,6 +475,7 @@
     }));
     diwaliGiftForm.addEventListener('submit', event => {
       event.preventDefault();
+      validateRecipientState();
       if (!diwaliGiftForm.reportValidity()) return;
       diwaliGiftForm.reset();
       giftTransition.classList.remove('exit');
