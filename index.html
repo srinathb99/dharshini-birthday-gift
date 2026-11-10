@@ -254,8 +254,8 @@
     .people-right .linkedin {left:5%;top:59%;width:42%;height:38%;transform:rotate(2.3deg);z-index:3}
     .people-right .sari {left:53%;top:45%;width:44%;height:52%;transform:rotate(-2.8deg);z-index:4}
     .people-note-ink {position:absolute;left:12%;bottom:4%;width:76%;height:17%;object-fit:contain;filter:drop-shadow(0 1px 0 #967a54aa) drop-shadow(0 -1px 0 #fff7);pointer-events:none}
-    .back-cover-panel {position:relative;overflow:hidden;background:#fff4d9;box-shadow:0 18px 42px #28162f55;border:1px solid #d1a744;background-image:none}
-    .back-cover-panel img {display:block;width:100%;height:100%;object-fit:contain;object-position:center;background:#fff4d9}
+    .back-cover-panel {position:relative;overflow:hidden;padding:0;background:#fff4d9;box-shadow:0 18px 42px #28162f55;border:0;background-image:none}
+    .back-cover-panel > img {position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;object-position:center}
     .back-cover-panel .home-corner {top:0;left:0;right:auto;bottom:auto}
     .back-cover-panel .previous-spread {right:auto;left:0;bottom:0;width:46px;height:46px;pointer-events:auto;touch-action:manipulation;clip-path:polygon(0 0,100% 100%,0 100%);place-items:end start;padding:0 0 5px 6px;background:linear-gradient(45deg,#b68a4b77,#dec68eaa 51%,transparent 52%);color:#7d5367aa;font-size:15px}
     .back-inside {background-color:#fff8e8;background-image:radial-gradient(#c28b2d22 .8px,transparent .8px);background-size:12px 12px}
@@ -422,7 +422,7 @@
   <main class="room-stage" id="room-stage">
     <div class="room-content">
       <h1 class="room-title">SURPRISE!</h1>
-      <p class="room-story-note">The power’s out, and even the UPS has gone on strike. Give it a few friendly taps to wake it up!</p>
+      <p class="room-story-note">Uh-oh, power's out and the UPS doesn't work. Who tested this? Anyway, before asking for a replacement, let's try gently tapping it!</p>
       <button class="ups-unit" id="ups-unit" type="button" aria-label="Tap the UPS to wake it up">
         <img src="assets/ups-cutout.png" alt="A dark, switched-off UPS">
       </button>
