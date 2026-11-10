@@ -219,7 +219,7 @@
     .back-cover-panel {position:absolute;inset:0;overflow:hidden;background:#fff4d9;box-shadow:0 18px 42px #28162f55;border:1px solid #d1a744}
     .back-cover-panel img {display:block;width:100%;height:100%;object-fit:cover}
     .back-cover-panel .home-corner {top:0;left:0;right:auto;bottom:auto}
-    .back-cover-panel .previous-spread {right:auto;left:0;clip-path:polygon(0 0,100% 100%,0 100%);place-items:end start;padding:0 0 5px 7px;background:linear-gradient(45deg,#ffe21a,#c28b2d 51%,transparent 52%)}
+    .back-cover-panel .previous-spread {right:auto;left:0;width:38px;height:38px;clip-path:polygon(0 0,100% 100%,0 100%);place-items:end start;padding:0 0 4px 5px;background:linear-gradient(45deg,#b68a4b55,#dec68e88 51%,transparent 52%);color:#7d5367aa;font-size:14px}
     .back-inside {background-color:#fff8e8;background-image:radial-gradient(#c28b2d22 .8px,transparent .8px);background-size:12px 12px}
     .custom-message {display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:clamp(24px,5vw,64px)}
     .custom-message h2 {margin:22px 0 14px}
@@ -310,6 +310,23 @@
     body.reading .ambient-krishna {opacity:0;transform:scale(.8)}
     @media(max-width:600px) { .scene{padding-top:16px}.eyebrow{font-size:.65rem}h1{font-size:clamp(2rem,9vw,3rem)}.intro{margin:9px auto 17px;font-size:.84rem}.circuit{margin-top:5px;font-size:.6rem}.gift{height:290px}.gift.open{height:470px}.envelope{height:185px;bottom:10px}.book{width:96vw;height:370px;min-height:0;transform:translate(-50%,-43%) scale(.75)}.gift.book-open .book{transform:translate(-50%,-50%) scale(1)}.page{padding:25px 19px 22px}.page h2{margin:22px 0 10px;font-size:1.55rem}.page p{font-size:.75rem;line-height:1.5}.book-signature{font-size:.86rem;margin-top:14px}.page-kicker{font-size:.52rem;letter-spacing:.1em}.motif{width:53px;height:53px}.motif svg{width:38px;height:38px}.motif.rama{top:4%;left:4%}.motif.krishna{top:4%;right:4%}.motif.narasimha{bottom:4%;left:4%}.kolam{width:55px;height:55px}body::before{background-size:100% 100%;background-position:center;opacity:1}body::after{inset:9px}.note{bottom:9px;font-size:.58rem}.ambient-krishna{right:4vw;bottom:10vh;width:110px}body.reading .scene{min-height:530px}body.reading .gift.open{min-height:530px}body.reading .book{width:98vw;height:65vh;min-height:400px}body.reading .page{padding:27px 19px}body.reading .page h2{font-size:clamp(1.55rem,7vw,2.4rem);margin-top:32px}body.reading .page p{font-size:.82rem;line-height:1.55}body.reading .page-kicker{font-size:.55rem}body.reading .book-signature{font-size:.86rem}body.reading body.reading body.reading .motif{width:42px;height:42px}body.reading .motif svg{width:30px;height:30px}body.reading .krishna-art{width:90px;right:16px;bottom:48px} }
     @media(max-width:600px) { .scene{padding-top:16px}.eyebrow{font-size:.65rem}h1{font-size:clamp(2rem,9vw,3rem)}.intro{margin:9px auto 17px;font-size:.84rem}.circuit{margin-top:5px;font-size:.56rem;padding:7px 9px}.gift{height:290px}.gift.open{height:470px}.envelope{height:185px;bottom:10px}.book{width:96vw;height:370px;min-height:0;transform:translate(-50%,-43%) scale(.75)}.gift.book-open .book{transform:translate(-50%,-50%) scale(1)}.page{padding:25px 19px 22px}.page h2{margin:22px 0 10px;font-size:1.55rem}.page p{font-size:.75rem;line-height:1.5}.book-signature{font-size:.86rem;margin-top:14px}.page-kicker{font-size:.52rem;letter-spacing:.1em}.motif{width:53px;height:53px}.motif svg{width:38px;height:38px}.motif.rama{top:4%;left:4%}.motif.krishna{top:4%;right:4%}.motif.narasimha{bottom:4%;left:4%}.kolam{width:55px;height:55px}body::before{background-size:100% 100%;background-position:center;opacity:1}body::after{inset:9px}.note{bottom:9px;font-size:.58rem}.ambient-krishna{right:4vw;bottom:10vh;width:110px}body.reading .scene{min-height:530px}body.reading .gift.open{min-height:530px}body.reading .book{width:calc(100vw - 42px);height:min(calc(100svh - 130px),680px);min-height:360px}body.reading .page{padding:30px 22px;background-size:auto,auto,100% 7px,8px 8px}body.reading .page h2{font-size:clamp(1.7rem,7vw,2.7rem);margin-top:38px}body.reading .page p{font-size:.9rem;line-height:1.65}body.reading .page-kicker{font-size:.59rem}body.reading .book-signature{font-size:.92rem}body.reading body.reading .motif{width:42px;height:42px}body.reading .motif svg{width:30px;height:30px}body.reading .krishna-art{width:90px;right:16px;bottom:48px} }
+    /* Portrait phones get a vertically opened book so each photo has room to breathe. */
+    @media(max-width:700px) and (orientation:portrait) {
+      body.reading {overflow-x:hidden;overflow-y:auto}
+      body.reading .scene {height:auto;min-height:100svh;display:block;overflow:visible}
+      body.reading .gift.open.book-open {position:relative;inset:auto;width:100%;height:auto;min-height:100svh;margin:0;display:block;padding:12px 0 72px}
+      body.reading .gift.book-open .book {position:relative;left:auto;top:auto;width:min(calc(100vw - 24px),560px);height:auto;min-height:0;margin:0 auto;transform:none;perspective:none}
+      body.reading .gift.book-open .book-shell {display:block;height:auto}
+      body.reading .gift.book-open .book-spread.active:not(.back-cover-spread) {position:relative;inset:auto;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto;gap:14px;animation:page-turn-in .7s cubic-bezier(.16,.8,.25,1) both}
+      body.reading .gift.book-open .back-cover-spread.active {position:relative;inset:auto;width:100%;height:auto;aspect-ratio:1075 / 1463}
+      body.reading .gift.book-open .page {width:100%;height:min(calc(100vw - 24px),390px);min-height:300px;padding:30px 20px;border-radius:12px}
+      body.reading .gift.book-open .places-page,body.reading .gift.book-open .people-page {padding:0}
+      body.reading .gift.book-open .page.left,body.reading .gift.book-open .page.right {border-radius:12px}
+      body.reading .gift.book-open .book::before {display:none}
+      body.reading .gift.book-open .place-card img,body.reading .gift.book-open .people-card img {object-fit:contain;background:#f3ead6}
+      body.reading .gift.book-open .places-page p.places-heading {top:2.5%;font-size:clamp(1.05rem,5vw,1.45rem);line-height:1.05}
+      body.reading .gift.book-open .people-note-ink {height:15%;bottom:3%}
+    }
     @media(prefers-reduced-motion:reduce) { *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important} }
   </style>
 </head>
