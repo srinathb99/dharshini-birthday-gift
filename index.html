@@ -8,6 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/src/Style/stPageFlip.min.css">
+  <script id="page-flip-library" src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.min.js" defer></script>
   <style>
     :root { --paper:#fff0c2; --ink:#321b3b; --rose:#e34234; --rose-dark:#8d174b; --gold:#ffe21a; --cream:#fffbe8; --green:#57227a; --blue:#4420a0; --purple:#61278c; --tomato:#e34234; --electric:#ffe21a; }
     * { box-sizing:border-box }
@@ -128,6 +130,7 @@
     .room-kicker {margin:0 0 8px;color:#8d98aa;font-size:.68rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;transition:color .7s}
     .room-title {margin:0;color:#e8e6df;font:600 clamp(1.8rem,5vw,3rem)/1.12 'Playfair Display',serif;text-shadow:0 3px 20px #000;transition:color .7s,text-shadow .7s}
     .room-copy {margin:10px 0 2px;color:#929bad;font-size:.88rem}
+    .room-story-note {max-width:490px;margin:12px auto 8px;color:#b9c1ce;font:italic .96rem/1.55 'Playfair Display',serif}
     .ups-unit {position:relative;display:block;width:min(80vw,640px);height:min(57vh,470px);margin:4px auto 0;padding:0;border:0;background:transparent;cursor:pointer; -webkit-tap-highlight-color:transparent;animation:ups-idle 4s ease-in-out infinite}
     .ups-unit img {width:100%;height:100%;object-fit:contain;filter:brightness(.42) saturate(.78) contrast(1.08);transition:filter 1.2s,transform .18s;user-select:none;-webkit-user-drag:none}
     .ups-unit:hover img {filter:brightness(.55) saturate(.85) contrast(1.08)}
@@ -142,7 +145,7 @@
     .room-stage.lit {background:radial-gradient(ellipse at 50% 50%,#fff5d6 0,#ffe59b 22%,#725b6b 58%,#171724 100%)}
     .room-stage.lit::before {opacity:0}
     .room-stage.lit .room-title {color:#55295f;text-shadow:0 2px 12px #fff9}
-    .room-stage.lit .room-kicker,.room-stage.lit .room-copy,.room-stage.lit .room-status {color:#704f65}
+    .room-stage.lit .room-kicker,.room-stage.lit .room-copy,.room-stage.lit .room-status,.room-stage.lit .room-story-note {color:#704f65}
     .room-stage.lit .ups-unit img {filter:brightness(1.1) saturate(1.05) drop-shadow(0 16px 45px #ffda67aa)}
     .light-flood {position:fixed;z-index:7;inset:0;pointer-events:none;background:#fff6cf;opacity:0}
     body.lights-on .light-flood {animation:light-flood 1.5s ease-out forwards}
@@ -178,20 +181,25 @@
     .gift { width:min(100%, 480px); height:330px; margin:0 auto; position:relative; perspective:1200px; outline:none; -webkit-tap-highlight-color:transparent; transition:width .7s ease,height .7s ease }
     .gift:focus-visible { border-radius:14px; outline:3px solid #a8323d88; outline-offset:10px }
     .book { position:absolute; z-index:4; left:50%; top:50%; width:min(900px,96vw); height:min(590px,76vh); min-height:390px; transform:translate(-50%,-42%) scale(.82); opacity:0; pointer-events:none; perspective:1500px;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.2,.8,.2,1),opacity .35s ease,width .65s ease,height .65s ease; filter:drop-shadow(0 22px 28px #49352a30) }
-    .book-cover {position:absolute;z-index:10;left:50%;top:0;width:min(88%,700px);height:100%;transform:translateX(-50%);transform-origin:left center;transform-style:preserve-3d;backface-visibility:hidden;background:#f5eee7;box-shadow:0 20px 46px #28162f66;overflow:visible;transition:transform 1s cubic-bezier(.2,.75,.2,1)}
+    .book-cover {background:#f5eee7;box-shadow:0 20px 46px #28162f66;overflow:visible}
+    .book-cover:not(.stf__item) {position:absolute;z-index:10;left:50%;top:0;width:min(88%,700px);height:100%;transform:translateX(-50%);transform-origin:left center;transform-style:preserve-3d;backface-visibility:hidden;overflow:visible;transition:transform 1s cubic-bezier(.2,.75,.2,1)}
     .book-cover img {display:block;width:100%;height:100%;object-fit:contain;background:transparent;border:0;box-shadow:none}
     .book.front-facing {aspect-ratio:1082 / 1454}
-    .book.front-facing .book-cover {width:100%}
+    .book.front-facing .book-cover:not(.stf__item) {width:100%}
+    .book.book-open-state {aspect-ratio:900 / 590}
     .book-cover .page-corner {right:0;bottom:0}
-    .book-shell {opacity:0;pointer-events:none;transform:rotateX(0);transform-origin:50% 88%;transform-style:preserve-3d;transition:opacity .45s .25s,transform .85s cubic-bezier(.2,.75,.2,1)}
+    .book-shell {opacity:0;pointer-events:none;transform:none;transition:opacity .45s .25s}
     .gift.book-cover-visible .book {opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
-    .gift.book-open .book-cover {transform:translateX(-50%) rotateY(-172deg);pointer-events:none}
     .gift.book-open .book::before {opacity:0}
     .gift.book-open .book-shell {opacity:1;pointer-events:auto}
-    .gift.book-open .book-shell {transform:none}
-    .book-shell { width:100%;height:100%;position:relative;display:grid;grid-template-columns:1fr 1fr;perspective:1600px }
-    .book::before { content:''; position:absolute;left:50%;top:10px;bottom:10px;width:13px;transform:translateX(-50%);background:linear-gradient(90deg,#9c6827,#f0d99c 42%,#a87832 58%,#754d20);z-index:8;border-radius:5px;box-shadow:0 0 7px #5b3b2522 }
-    .page { position:relative; overflow:hidden; padding:clamp(42px,5vw,68px); border:1px solid #d4bd83; background-color:#fffaf0;background-image:linear-gradient(145deg,#fffefb 0%,#fffaf0 42%,#f7edda 100%),radial-gradient(#b28c4a12 .55px,transparent .75px);background-size:auto,7px 7px;text-align:left;transition:transform .75s cubic-bezier(.2,.8,.2,1),filter .75s }
+    .gift.book-cover-visible .book-shell {opacity:1;pointer-events:auto}
+    .gift.book-open .book-cover:not(.stf__item) {transform:translateX(-50%) rotateY(-172deg);pointer-events:none}
+    .book-shell {width:100%;height:100%;position:relative;display:block;overflow:visible}
+    .book-shell.stf__parent {width:100%;height:100%;min-width:0;min-height:0;overflow:visible}
+    .book-shell .stf__wrapper,.book-shell .stf__block {width:100%;height:100%;padding-bottom:0!important}
+    .book-shell .stf__block {perspective:1600px}
+    .book::before {display:none}
+    .page { position:relative; overflow:hidden; padding:clamp(42px,5vw,68px); border:1px solid #d4bd83; background-color:#fffaf0;background-image:linear-gradient(145deg,#fffefb 0%,#fffaf0 42%,#f7edda 100%),radial-gradient(#b28c4a12 .55px,transparent .75px);background-size:auto,7px 7px;text-align:left;transition:none }
     .page::before {content:'';position:absolute;z-index:10;inset:0;pointer-events:none;opacity:.24;background:linear-gradient(112deg,transparent 0%,#fff 15%,#fff6 24%,transparent 39%,transparent 72%,#fff7 80%,transparent 90%),linear-gradient(180deg,#fff8,transparent 18%,transparent 84%,#b8893c12);mix-blend-mode:screen}
     .page.left { border-radius:12px 0 0 12px;box-shadow:inset -12px 0 18px -18px #3c261e }
     .page.right { border-radius:0 12px 12px 0;box-shadow:inset 12px 0 18px -18px #3c261e }
@@ -227,10 +235,10 @@
     .places-left .temple {left:59%;top:3%;width:34%;height:53%;transform:rotate(3.2deg);z-index:2}
     .places-left .vit {left:3%;top:51%;width:43%;height:40%;transform:rotate(2.8deg);z-index:3}
     .places-left .surat {left:52%;top:63%;width:44%;height:30%;transform:rotate(-2.6deg);z-index:4}
-    .places-right .schneider {left:2%;top:4%;width:57%;height:37%;transform:rotate(-2.4deg);z-index:2}
-    .places-right .central {left:63%;top:2%;width:31%;height:60%;transform:rotate(3deg);z-index:4}
-    .places-right .marina {left:22%;top:48%;width:46%;height:42%;transform:rotate(-2.5deg);z-index:3}
-    .places-right .ernakulam {left:66%;top:49%;width:31%;height:43%;transform:rotate(2.2deg);z-index:5}
+    .places-right .schneider {left:2%;top:4%;width:55%;height:36%;transform:rotate(-2.4deg);z-index:2}
+    .places-right .central {left:63%;top:3%;width:31%;height:43%;transform:rotate(2.6deg);z-index:4}
+    .places-right .marina {left:3%;top:54%;width:55%;height:39%;transform:rotate(2deg);z-index:3}
+    .places-right .ernakulam {left:63%;top:51%;width:32%;height:42%;transform:rotate(-2.2deg);z-index:5}
     .people-page {padding:0}
     .people-grid {position:absolute;inset:4% 5% 19%}
     .people-left .people-grid {inset:3% 3%}
@@ -246,7 +254,7 @@
     .people-right .linkedin {left:5%;top:59%;width:42%;height:38%;transform:rotate(2.3deg);z-index:3}
     .people-right .sari {left:53%;top:45%;width:44%;height:52%;transform:rotate(-2.8deg);z-index:4}
     .people-note-ink {position:absolute;left:12%;bottom:4%;width:76%;height:17%;object-fit:contain;filter:drop-shadow(0 1px 0 #967a54aa) drop-shadow(0 -1px 0 #fff7);pointer-events:none}
-    .back-cover-panel {position:absolute;inset:0;overflow:hidden;background:#fff4d9;box-shadow:0 18px 42px #28162f55;border:1px solid #d1a744}
+    .back-cover-panel {position:relative;overflow:hidden;background:#fff4d9;box-shadow:0 18px 42px #28162f55;border:1px solid #d1a744}
     .back-cover-panel img {display:block;width:100%;height:100%;object-fit:cover}
     .back-cover-panel .home-corner {top:0;left:0;right:auto;bottom:auto}
     .back-cover-panel .previous-spread {right:auto;left:0;width:38px;height:38px;clip-path:polygon(0 0,100% 100%,0 100%);place-items:end start;padding:0 0 4px 5px;background:linear-gradient(45deg,#b68a4b55,#dec68e88 51%,transparent 52%);color:#7d5367aa;font-size:14px}
@@ -346,7 +354,8 @@
       body.reading .scene {height:100svh;min-height:0;display:grid;place-items:center;overflow:hidden}
       body.reading .gift.open.book-open {position:absolute;inset:0;width:100%;height:100svh;min-height:0;margin:0;display:grid;place-items:center;padding:12px 0}
       body.reading .gift.book-open .book {position:relative;left:auto;top:auto;width:min(calc(100vw - 24px),560px,calc(73.4svh - 24px));height:auto;min-height:0;margin:0 auto;transform:none;perspective:none}
-      body.reading .gift.book-open .book-shell {display:block;height:auto}
+      body.reading .gift.book-open .book-shell {display:block;height:100%}
+      body.reading .gift.book-open .book.book-open-state {aspect-ratio:450 / 590}
       body.reading .gift.book-open .book-spread.active:not(.back-cover-spread) {position:relative;inset:auto;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto;gap:14px;animation:none}
       body.reading .gift.book-open .back-cover-spread.active {position:relative;inset:auto;width:100%;height:auto;aspect-ratio:1075 / 1463}
       body.reading .gift.book-open .page {width:100%;height:min(calc(100vw - 24px),calc(50svh - 28px),390px);min-height:0;padding:30px 20px;border-radius:12px}
@@ -389,6 +398,7 @@
           <div class="state-options" id="state-options" role="listbox" aria-label="Indian states and union territories" hidden></div>
           <p class="state-empty" id="state-empty" role="status" hidden>No matching state or Union Territory.</p>
         </div></div>
+        <div class="diwali-field"><label for="recipient-pin">PIN code</label><input id="recipient-pin" name="pin-code" type="text" inputmode="numeric" autocomplete="postal-code" pattern="[0-9]{6}" maxlength="6" title="Enter a 6-digit Indian PIN code" required></div>
         <fieldset class="gift-choice"><legend>Choose your Diwali gift</legend><div class="gift-options">
           <div class="gift-option"><input id="gift-hoodie" name="gift" type="radio" value="Hoodie" required><label for="gift-hoodie">Hoodie</label></div>
           <div class="gift-option"><input id="gift-duffel" name="gift" type="radio" value="Duffel bag"><label for="gift-duffel">Duffel bag</label></div>
@@ -412,6 +422,7 @@
   <main class="room-stage" id="room-stage">
     <div class="room-content">
       <h1 class="room-title">SURPRISE!</h1>
+      <p class="room-story-note">The power’s out, and even the UPS has gone on strike. Give it a few friendly taps to wake it up!</p>
       <button class="ups-unit" id="ups-unit" type="button" aria-label="Tap the UPS to wake it up">
         <img src="assets/ups-cutout.png" alt="A dark, switched-off UPS">
       </button>
@@ -428,7 +439,7 @@
     <div class="circuit" aria-hidden="true">⚡ Dharshini N Chari, B.Tech, M.Tech (soon!) ⚡</div>
     <div class="gift" id="gift" role="button" tabindex="0" aria-label="Open your birthday gift" aria-expanded="false">
       <section class="book" id="book" aria-label="Birthday storybook">
-        <div class="book-cover" aria-label="Birthday book cover">
+        <div class="book-cover" data-density="hard" aria-label="Birthday book cover">
           <img src="assets/back-cover-art.png" alt="Hand-painted birthday balloons on a warm ivory cover with a gold floral border">
           <button class="page-corner" id="cover-turn" type="button" aria-label="Turn the cover to open the book">›</button>
         </div>
@@ -477,7 +488,7 @@
             </article>
           </div>
           <div class="book-spread back-cover-spread" aria-label="Birthday book back cover">
-            <div class="back-cover-panel">
+            <div class="page back-cover-panel" data-density="hard">
               <img src="assets/back-cover-note.png" alt="A handwritten birthday wish from Srinath on a pastel candle birthday card">
               <button class="page-corner home-corner return-envelope" type="button" title="Return to envelope" aria-label="Close the book and return to the birthday envelope">‹</button>
               <button class="page-corner previous-spread" type="button" aria-label="Turn back to the people collage">‹</button>
@@ -492,6 +503,9 @@
     <p class="hint" id="hint">Tap the envelope to open your birthday card</p>
   </main>
   <script>
+    const pageFlipScript = document.querySelector('#page-flip-library');
+    pageFlipScript.addEventListener('load', () => { pageFlipScript.dataset.loaded = 'true'; }, {once:true});
+    pageFlipScript.addEventListener('error', () => { pageFlipScript.dataset.failed = 'true'; }, {once:true});
     const diwaliGiftForm = document.querySelector('#diwali-gift-form');
     const giftTransition = document.querySelector('#gift-transition');
     const roomStage = document.querySelector('#room-stage');
@@ -653,54 +667,8 @@
     const hint = document.querySelector('#hint');
     let bookOpen = false;
     let closingBook = false;
-    function openEnvelope() {
-      if (bookOpen) return;
-      bookOpen = true;
-      book.classList.remove('back-facing');
-      book.classList.add('front-facing');
-      document.body.classList.add('reading');
-      gift.classList.add('open');
-      gift.setAttribute('aria-expanded', 'true');
-      hint.textContent = 'The birthday book is waiting inside';
-      window.setTimeout(() => {
-        gift.classList.add('book-cover-visible');
-        hint.textContent = 'Turn the lower corner to open your book';
-      }, 720);
-    }
-    document.querySelector('#cover-turn').addEventListener('click', () => {
-      if (!bookOpen || closingBook) return;
-      book.classList.remove('back-facing');
-      book.classList.remove('front-facing');
-      document.querySelectorAll('.book-spread').forEach(spread => spread.classList.remove('active'));
-      document.querySelector('.places-spread').classList.add('active');
-      gift.classList.add('book-open');
-      hint.textContent = 'Places you’ve been — and a note just for you';
-    });
-    let turningSpread = false;
-    let turnGeneration = 0;
-    function cleanPageClone(source) {
-      const clone = source.cloneNode(true);
-      clone.removeAttribute('id');
-      clone.querySelectorAll('.page-corner').forEach(button => button.remove());
-      clone.querySelectorAll('[id]').forEach(element => element.removeAttribute('id'));
-      return clone;
-    }
-    function sideContent(spread, side) {
-      const pages = [...spread.children].filter(child => child.matches('.page'));
-      return pages[side] || spread.querySelector('.back-cover-panel') || pages[0] || spread;
-    }
-    function makeTurnFace(source, face) {
-      const surface = document.createElement('div');
-      surface.className = `turning-face ${face}`;
-      surface.append(cleanPageClone(source));
-      return surface;
-    }
-    function makeTurnLeaf(front, back, mobile) {
-      const leaf = document.createElement('div');
-      leaf.className = `turn-leaf${mobile ? ' mobile' : ''}`;
-      leaf.append(makeTurnFace(front, 'front'), makeTurnFace(back, 'back'));
-      return leaf;
-    }
+    let pageFlipInstance = null;
+    let pageFlipPromise = null;
     async function waitForImages(container) {
       const images = [...container.querySelectorAll('img')];
       await Promise.all(images.map(async image => {
@@ -714,84 +682,97 @@
         if (image.naturalWidth && image.decode) await image.decode().catch(() => {});
       }));
     }
-    function turnToSpread(targetSelector, message, direction) {
-      if (turningSpread || closingBook) return;
-      const shell = book.querySelector('.book-shell');
-      const current = shell.querySelector('.book-spread.active');
-      const destination = shell.querySelector(targetSelector);
-      if (!current || !destination || current === destination) return;
-      turningSpread = true;
-      const generation = ++turnGeneration;
-      const mobile = window.matchMedia('(max-width: 700px) and (orientation: portrait)').matches;
-      const stage = document.createElement('div');
-      stage.className = `turn-stage${mobile ? ' mobile' : ''}`;
-      stage.setAttribute('aria-hidden', 'true');
-      stage.inert = true;
-      const forward = direction === 'forward';
-      let leaf;
-      const finishTurn = () => {
-        if (!turningSpread || generation !== turnGeneration) return;
-        shell.querySelectorAll('.book-spread').forEach(spread => spread.classList.remove('active'));
-        destination.classList.add('active');
-        book.classList.toggle('back-facing', targetSelector === '.back-cover-spread');
-        stage.remove();
-        turningSpread = false;
-      };
-      if (mobile) {
-        const underlay = destination.cloneNode(true);
-        underlay.classList.remove('active');
-        underlay.classList.add('turn-mobile-spread');
-        underlay.querySelectorAll('.page-corner').forEach(button => button.remove());
-        underlay.querySelectorAll('[id]').forEach(element => element.removeAttribute('id'));
-        const underlaySide = document.createElement('div');
-        underlaySide.className = 'turn-side';
-        underlaySide.append(underlay);
-        stage.append(underlaySide);
-        const front = cleanPageClone(current);
-        const back = cleanPageClone(destination);
-        front.classList.remove('active');
-        back.classList.remove('active');
-        front.classList.add('turn-mobile-spread');
-        back.classList.add('turn-mobile-spread');
-        leaf = document.createElement('div');
-        leaf.className = 'turn-leaf mobile';
-        leaf.append(makeTurnFace(front, 'front'), makeTurnFace(back, 'back'));
-        stage.append(leaf);
-        leaf.addEventListener('animationend', finishTurn, {once:true});
-      } else {
-        const underLeft = document.createElement('div');
-        underLeft.className = 'turn-side';
-        underLeft.append(cleanPageClone(forward ? sideContent(current, 0) : sideContent(destination, 0)));
-        const underRight = document.createElement('div');
-        underRight.className = 'turn-side';
-        underRight.append(cleanPageClone(forward ? sideContent(destination, 1) : sideContent(current, 1)));
-        stage.append(underLeft, underRight);
-        const frontSource = forward ? sideContent(current, 1) : sideContent(current, 0);
-        const backSource = forward ? sideContent(destination, 0) : sideContent(destination, 1);
-        leaf = makeTurnLeaf(frontSource, backSource, false);
-        stage.append(leaf);
-        leaf.addEventListener('animationend', finishTurn, {once:true});
-      }
-      hint.textContent = message;
-      waitForImages(stage).then(() => {
-        if (!turningSpread || generation !== turnGeneration || closingBook) return;
-        shell.append(stage);
-        current.classList.remove('active');
-        destination.classList.add('active');
-        requestAnimationFrame(() => requestAnimationFrame(() => {
-          if (!turningSpread || generation !== turnGeneration || closingBook) return;
-          leaf.classList.add(forward ? 'forward' : 'backward');
-          window.setTimeout(finishTurn, 1100);
-        }));
+    async function initializePageFlip() {
+      if (pageFlipInstance) return pageFlipInstance;
+      if (pageFlipPromise) return pageFlipPromise;
+      pageFlipPromise = (async () => {
+        await waitForImages(book);
+        if (!window.St?.PageFlip && !pageFlipScript.dataset.loaded && !pageFlipScript.dataset.failed) {
+          await new Promise(resolve => {
+            pageFlipScript.addEventListener('load', resolve, {once:true});
+            pageFlipScript.addEventListener('error', resolve, {once:true});
+            window.setTimeout(resolve, 5000);
+          });
+        }
+        if (!window.St?.PageFlip) return null;
+        const shell = book.querySelector('.book-shell');
+        const pages = [
+          book.querySelector('.book-cover'),
+          ...shell.querySelectorAll('.places-spread > .page, .people-spread > .page'),
+          shell.querySelector('.back-cover-panel')
+        ];
+        pageFlipInstance = new window.St.PageFlip(shell, {
+          width:450, height:590, size:'stretch', minWidth:270, maxWidth:450,
+          minHeight:350, maxHeight:590, autoSize:true, showCover:true,
+          drawShadow:true, maxShadowOpacity:.24, flippingTime:900,
+          usePortrait:true, useMouseEvents:false, clickEventForward:true,
+          disableFlipByClick:true, mobileScrollSupport:true, startPage:0
+        });
+        pageFlipInstance.loadFromHTML(pages);
+        pageFlipInstance.on('flip', event => {
+          const isBackCover = Number(event.data) === pages.length - 1;
+          book.classList.toggle('back-facing', isBackCover);
+          if (isBackCover) window.setTimeout(() => pageFlipInstance?.update(), 700);
+        });
+        return pageFlipInstance;
+      })().catch(error => {
+        console.error('The book flip library could not initialize.', error);
+        pageFlipPromise = null;
+        return null;
       });
+      return pageFlipPromise;
     }
+    function openEnvelope() {
+      if (bookOpen) return;
+      bookOpen = true;
+      book.classList.remove('back-facing');
+      book.classList.add('front-facing');
+      document.body.classList.add('reading');
+      gift.classList.add('open');
+      gift.setAttribute('aria-expanded', 'true');
+      hint.textContent = 'The birthday book is waiting inside';
+      window.setTimeout(async () => {
+        hint.textContent = 'Getting your pages ready…';
+        await initializePageFlip();
+        if (closingBook || !bookOpen) return;
+        gift.classList.add('book-cover-visible');
+        hint.textContent = 'Turn the lower corner to open your book';
+      }, 720);
+    }
+    document.querySelector('#cover-turn').addEventListener('click', () => {
+      if (!bookOpen || closingBook) return;
+      book.classList.remove('front-facing','back-facing');
+      book.classList.add('book-open-state');
+      gift.classList.add('book-open');
+      hint.textContent = 'Places you’ve been — and a note just for you';
+      if (pageFlipInstance) {
+        window.setTimeout(() => {
+          if (closingBook) return;
+          pageFlipInstance.update();
+          pageFlipInstance.flipNext('bottom');
+        }, 700);
+      } else {
+        document.querySelector('.places-spread').classList.add('active');
+      }
+    });
     document.querySelectorAll('.next-spread').forEach(button => button.addEventListener('click', () => {
-      if (button.closest('.places-spread')) turnToSpread('.people-spread', 'A little album of favorite people', 'forward');
-      else turnToSpread('.back-cover-spread', 'The back cover', 'forward');
+      if (button.closest('.places-right')) hint.textContent = 'A little album of favorite people';
+      else hint.textContent = 'The back cover';
+      if (pageFlipInstance) pageFlipInstance.flipNext('bottom');
+      else {
+        const current = document.querySelector('.book-spread.active');
+        current?.classList.remove('active');
+        (button.closest('.places-right') ? document.querySelector('.people-spread') : document.querySelector('.back-cover-spread'))?.classList.add('active');
+      }
     }));
     document.querySelectorAll('.previous-spread').forEach(button => button.addEventListener('click', () => {
-      if (button.closest('.back-cover-spread')) turnToSpread('.people-spread', 'A little album of favorite people', 'backward');
-      else turnToSpread('.places-spread', 'Places you’ve been — and a note just for you', 'backward');
+      hint.textContent = button.closest('.back-cover-panel') ? 'A little album of favorite people' : 'Places you’ve been — and a note just for you';
+      if (pageFlipInstance) pageFlipInstance.flipPrev('bottom');
+      else {
+        const current = document.querySelector('.book-spread.active');
+        current?.classList.remove('active');
+        (button.closest('.back-cover-panel') ? document.querySelector('.people-spread') : document.querySelector('.places-spread'))?.classList.add('active');
+      }
     }));
     gift.addEventListener('click', event => {
       if (!bookOpen && !event.target.closest('.page-corner, .place')) openEnvelope();
@@ -802,10 +783,10 @@
     function returnToEnvelope() {
       if (!bookOpen || closingBook) return;
       closingBook = true;
-      turnGeneration++;
-      book.querySelector('.turn-stage')?.remove();
-      turningSpread = false;
+      if (pageFlipInstance) pageFlipInstance.turnToPage(0);
       gift.classList.remove('book-open');
+      book.classList.remove('book-open-state','back-facing');
+      book.classList.add('front-facing');
       hint.textContent = 'Returning to your birthday envelope';
       window.setTimeout(() => {
         gift.classList.remove('book-cover-visible','open');
@@ -814,6 +795,7 @@
         closingBook = false;
         gift.setAttribute('aria-expanded', 'false');
         hint.textContent = 'Tap the envelope to open your birthday card';
+        pageFlipInstance?.update();
       }, 1050);
     }
     document.querySelectorAll('.return-envelope').forEach(button => button.addEventListener('click', returnToEnvelope));
